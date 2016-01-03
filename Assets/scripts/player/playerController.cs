@@ -5,7 +5,10 @@ public class playerController : MonoBehaviour {
 
     public KeyCode keyLeft; 
     public KeyCode keyRight;
+    public KeyCode keyUp;
     public int horizontalMoveSpeed;
+    public int jumpSpeed;
+
 
     private Rigidbody2D body;
     private Vector2 vector;
@@ -17,21 +20,26 @@ public class playerController : MonoBehaviour {
 	
 	// FixedUpdate is called once per timestep
 	void FixedUpdate () {
-        float deltaspeed = 0.0f;
+        float deltaSpeedX = 0.0f;
+        float deltaSpeedY = body.velocity.y;
         //left movement
 	    if (Input.GetKey(keyLeft)) {
             //apply instantaneous force to go left
-            deltaspeed -= horizontalMoveSpeed;
+            deltaSpeedX -= horizontalMoveSpeed;
             
         }
         //right movement
         if (Input.GetKey(keyRight)) {
             //apply instanteous force to go right
-            deltaspeed += horizontalMoveSpeed;
+            deltaSpeedX += horizontalMoveSpeed;
+        }
+        //jump
+        if (Input.GetKeyDown(keyUp)) {
+            deltaSpeedY += jumpSpeed;
         }
 
         //apply movement
-        vector = new Vector2(deltaspeed, body.velocity.y);
+        vector = new Vector2(deltaSpeedX, deltaSpeedY);
         body.velocity = vector;
     }
 }
