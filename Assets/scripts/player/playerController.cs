@@ -3,9 +3,10 @@ using System.Collections;
 
 public class playerController : MonoBehaviour {
 
-    public KeyCode keyLeft;
+    public KeyCode keyLeft; 
     public KeyCode keyRight;
     public int horizontalMoveSpeed;
+
     private Rigidbody2D body;
     private Vector2 vector;
 
@@ -14,17 +15,23 @@ public class playerController : MonoBehaviour {
         body = GetComponent<Rigidbody2D>();
 	}
 	
-	// FixedUpdate is called once per frame
+	// FixedUpdate is called once per timestep
 	void FixedUpdate () {
+        float deltaspeed = 0.0f;
+        //left movement
 	    if (Input.GetKey(keyLeft)) {
-            vector = new Vector2(-1.0f, 0.0f) * horizontalMoveSpeed;
-            body.AddForce(vector);
+            //apply instantaneous force to go left
+            deltaspeed -= horizontalMoveSpeed;
+            
+        }
+        //right movement
+        if (Input.GetKey(keyRight)) {
+            //apply instanteous force to go right
+            deltaspeed += horizontalMoveSpeed;
         }
 
-        if (Input.GetKey(keyRight))
-        {
-            vector = new Vector2(1.0f, 0.0f) * horizontalMoveSpeed;
-            body.AddForce(vector);
-        }
-	}
+        //apply movement
+        vector = new Vector2(deltaspeed, body.velocity.y);
+        body.velocity = vector;
+    }
 }
