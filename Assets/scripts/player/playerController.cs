@@ -7,7 +7,6 @@ public class playerController : MonoBehaviour {
     public KeyCode keyRight;
     public KeyCode keyUp;
     public KeyCode keyAttack;
-    public AudioClip attackclip;
     public int horizontalMoveSpeed;
     public int jumpSpeed;
 
@@ -19,6 +18,7 @@ public class playerController : MonoBehaviour {
     private bool hitright;
     private bool hitjump;
     private bool hitattack;
+    private AudioSource attacksound;
 
 	// Use this for initialization
 	void Start () {
@@ -34,6 +34,8 @@ public class playerController : MonoBehaviour {
         hitright = false;
         hitjump = false;
         hitattack = false;
+        //attack sound source setup
+        attacksound = GetComponent<AudioSource>();
 }
 	
 	// Update is called once per frame, gather input
@@ -79,7 +81,7 @@ public class playerController : MonoBehaviour {
         }
 
         if (hitattack) {
-            AudioSource.PlayClipAtPoint(attackclip, Camera.main.transform.position);
+            attacksound.Play();
             hitattack = false;
         }
 
