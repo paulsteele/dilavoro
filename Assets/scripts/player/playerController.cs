@@ -6,6 +6,8 @@ public class playerController : MonoBehaviour {
     public KeyCode keyLeft; 
     public KeyCode keyRight;
     public KeyCode keyUp;
+    public KeyCode keyAttack;
+    public AudioClip attackclip;
     public int horizontalMoveSpeed;
     public int jumpSpeed;
 
@@ -13,6 +15,10 @@ public class playerController : MonoBehaviour {
     private Vector2 vector;
     private float width;
     private float height;
+    private bool hitleft;
+    private bool hitright;
+    private bool hitjump;
+    private bool hitattack;
 
 	// Use this for initialization
 	void Start () {
@@ -23,33 +29,58 @@ public class playerController : MonoBehaviour {
         height = (sp.bounds.max.y - sp.bounds.min.y) / 2;
         width *= body.transform.localScale.x;
         height *= body.transform.localScale.y;
-    }
+        //false out all key hit flags
+        hitleft = false;
+        hitright = false;
+        hitjump = false;
+        hitattack = false;
+}
 	
-	// FixedUpdate is called once per timestep
-	void FixedUpdate () {
+	// Update is called once per frame, gather input
+	void Update () {
+        //this section checks to see if key is hit on frame and then sets a flag so physics calculations can be done if fixed time along with sound cues
+        //left movement
+        hitleft = Input.GetKey(keyLeft);
+        //right movement
+        hitright = Input.GetKey(keyRight);
+        //jump
+        hitjump = Input.GetKey(keyUp);
+        //attack
+        if (Input.GetKeyDown(keyAttack)) {
+            hitattack = true;
+        }
+        
+
+    }
+
+    void FixedUpdate() { //physic calculations handled here
         float deltaSpeedX = 0.0f;
         float deltaSpeedY = body.velocity.y;
         //left movement
-	    if (Input.GetKey(keyLeft)) {
+        if (hitleft) {
             //apply instantaneous force to go left
             deltaSpeedX -= horizontalMoveSpeed;
-            
         }
         //right movement
-        if (Input.GetKey(keyRight)) {
+        if (hitright) {
             //apply instanteous force to go right
             deltaSpeedX += horizontalMoveSpeed;
         }
         //jump
-        if (Input.GetKey(keyUp)) {
-            
+        if (hitjump) {
+
             Vector2 topLeft = new Vector2(body.position.x - width, body.position.y - height);
-            Vector2 bottomRight = new Vector2(body.position.x + width, body.position.y - height -1 );
+            Vector2 bottomRight = new Vector2(body.position.x + width, body.position.y - height - 1);
             bool grounded = Physics2D.OverlapArea(topLeft, bottomRight, LayerMask.NameToLayer("StaticTerrain"));
             if (grounded && deltaSpeedY.CompareTo(0.0f) == 0) {
                 deltaSpeedY += jumpSpeed;
             }
-            
+
+        }
+
+        if (hitattack) {
+            AudioSource.PlayClipAtPoint(attackclip, Camera.main.transform.position);
+            hitattack = false;
         }
 
         //apply movement
