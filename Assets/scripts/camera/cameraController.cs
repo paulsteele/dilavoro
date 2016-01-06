@@ -18,20 +18,18 @@ public class cameraController : MonoBehaviour {
         float difference = focus.transform.position.x - transform.position.x;
         if (Mathf.Abs(difference).CompareTo(horizontalPadding) > 0) {
             int comp = difference.CompareTo(0);
-            Vector3 move;
+            float xchange;
             if (comp > 0) {
-                move = new Vector3(focus.transform.position.x - horizontalPadding, transform.position.y, transform.position.z);
+                xchange = focus.transform.position.x - horizontalPadding;
 
             }
             else if (comp < 0) {
-                move = new Vector3(focus.transform.position.x + horizontalPadding, transform.position.y, transform.position.z);
+                xchange = focus.transform.position.x + horizontalPadding;
             }
             else {
                 return;
             }
-            transform.position = move;
+            transform.position = new Vector3(xchange, transform.position.y, transform.position.z);
         }
-        
-
     }
 }
