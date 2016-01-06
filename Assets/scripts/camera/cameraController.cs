@@ -6,11 +6,9 @@ public class cameraController : MonoBehaviour {
     public string focustext;
     public float horizontalPadding;
     private GameObject focus;
-    private float radius;
     private float centerx;
 	// Use this for initialization
 	void Start () {
-        radius = Camera.main.orthographicSize * Screen.width / Screen.height;
         focus = GameObject.Find(focustext);
     }
 	
