@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class playerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour {
 
     public KeyCode keyLeft; 
     public KeyCode keyRight;
@@ -12,6 +12,7 @@ public class playerController : MonoBehaviour {
 
     private Rigidbody2D body;
     private Vector2 vector;
+    private MasterController master;
     private float width;
     private float height;
     private bool hitleft;
@@ -36,6 +37,8 @@ public class playerController : MonoBehaviour {
         hitattack = false;
         //attack sound source setup
         attacksound = GetComponent<AudioSource>();
+        //setup master
+        master = GameObject.Find("Master").GetComponent<MasterController>();
 }
 	
 	// Update is called once per frame, gather input
@@ -50,6 +53,7 @@ public class playerController : MonoBehaviour {
         //attack
         if (Input.GetKeyDown(keyAttack)) {
             hitattack = true;
+            master.onHit();
         }
         
 
