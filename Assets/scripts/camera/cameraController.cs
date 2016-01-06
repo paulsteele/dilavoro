@@ -5,31 +5,51 @@ public class cameraController : MonoBehaviour {
 
     public string focustext;
     public float horizontalPadding;
+    public float verticalPadding;
     private GameObject focus;
-    private float centerx;
+
 	// Use this for initialization
 	void Start () {
-        focus = GameObject.Find(focustext);
+        focus = GameObject.Find(focustext); //sets the follow object to typically the player
     }
 	
 	// Update is called once per frame
 	void Update () {
         //bounds check
-        float difference = focus.transform.position.x - transform.position.x;
-        if (Mathf.Abs(difference).CompareTo(horizontalPadding) > 0) {
-            int comp = difference.CompareTo(0);
-            float xchange;
+        Vector2 difference = focus.transform.position - transform.position; //find the difference of the camera position and the focus position
+        bool change = false;
+        //values for the new position of camera
+        float xchange = transform.position.x;
+        float ychange = transform.position.y;
+        //chechk if x difference is bigger than allowed padding
+        if (Mathf.Abs(difference.x).CompareTo(horizontalPadding) > 0){
+            int comp = difference.x.CompareTo(0);
+            change = true;
+            //move camera left
             if (comp > 0) {
                 xchange = focus.transform.position.x - horizontalPadding;
-
             }
+            //move camera right
             else if (comp < 0) {
                 xchange = focus.transform.position.x + horizontalPadding;
             }
-            else {
-                return;
+        }
+        //check if y difference is bigger than allowed padding
+        if (Mathf.Abs(difference.y).CompareTo(verticalPadding) > 0) {
+            int comp = difference.y.CompareTo(0);
+            change = true;
+            //move camera down
+            if (comp > 0) {
+                ychange = focus.transform.position.y - verticalPadding;
             }
-            transform.position = new Vector3(xchange, transform.position.y, transform.position.z);
+            //move camera up
+            else if (comp < 0) {
+                ychange = focus.transform.position.y + verticalPadding;
+            }
+        }
+        //only if actual camera movement occured, update camera position
+        if (change) {
+            transform.position = new Vector3(xchange, ychange, transform.position.z);
         }
     }
 }
