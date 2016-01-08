@@ -11,7 +11,7 @@ public class MasterController : MonoBehaviour {
     private int partialBeat;
     private int partialMax;
     private Text bpmText;
-    public AudioSource bass;
+    private AudioSource bass;
     //faster startup
 	void Start() { 
         //clear prefs
@@ -35,13 +35,17 @@ public class MasterController : MonoBehaviour {
             Debug.Log("hit on beat " + beat);
             return true;
         }
-        Debug.Log("miss on beat" + currentBeat);
+        Debug.Log("miss on beat " + currentBeat + " | p: " + partialBeat + "/" + partialMax);
         return false;
     }
 
     public int checkBeat() {
         if (partialBeat > (partialMax - (bpm * hitLeeway))) {
-            return currentBeat + 1;
+            int safebeat = currentBeat + 1;
+            if (safebeat > bpm) {
+                return 0;
+            }
+            return safebeat;
         }
         if (partialBeat < bpm * hitLeeway) {
             return currentBeat;
