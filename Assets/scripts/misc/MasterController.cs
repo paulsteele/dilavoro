@@ -10,6 +10,7 @@ public class MasterController : MonoBehaviour {
     private int partialBeat;
     private int partialMax;
     private Text bpmText;
+    public AudioClip audio;
     //faster startup
 	void Start() { 
         //clear prefs
@@ -34,6 +35,7 @@ public class MasterController : MonoBehaviour {
         if (partialBeat >= partialMax) { //if filled or overfilled 
             partialBeat = partialBeat - partialMax; //set the partial to the extra left over so eventually beat get back in sync
             currentBeat++;
+            AudioSource.PlayClipAtPoint(audio, Camera.main.transform.position);
             if (currentBeat > bpm) {
                 currentBeat = 0;
             }
