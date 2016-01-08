@@ -21,7 +21,7 @@ public class MasterController : MonoBehaviour {
         //setup bpm counters
         currentBeat = 0;
         partialBeat = 0;
-        partialMax = ( 60) * (int) (1 / Time.fixedDeltaTime);
+        partialMax = ( 60) * (int) (1 / Time.fixedDeltaTime); //typically will be 3000, but this is the "bar" the bpm has to fill inorder to be on the next beat
         bpmText = GameObject.Find("bpmcounter").GetComponent<Text>();
     }
 
@@ -30,10 +30,9 @@ public class MasterController : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        partialBeat += bpm;
-        //bpmText.text = "" + partialBeat + " / " + partialMax + " BPM";
-        if (partialBeat == partialMax) {
-            partialBeat = 0;
+        partialBeat += bpm; //add the bpm to the bar to fill
+        if (partialBeat >= partialMax) { //if filled or overfilled 
+            partialBeat = partialBeat - partialMax; //set the partial to the extra left over so eventually beat get back in sync
             currentBeat++;
             if (currentBeat > bpm) {
                 currentBeat = 0;
