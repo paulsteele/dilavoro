@@ -53,7 +53,6 @@ public class PlayerController : MonoBehaviour {
         //attack
         if (Input.GetKeyDown(keyAttack)) {
             hitattack = true;
-            master.onHit();
         }
         
 
@@ -85,7 +84,9 @@ public class PlayerController : MonoBehaviour {
         }
 
         if (hitattack) {
-            attacksound.Play();
+            if (master.onHit()) {
+                attacksound.Play();
+            }
             hitattack = false;
         }
 

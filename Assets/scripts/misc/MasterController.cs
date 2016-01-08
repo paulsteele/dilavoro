@@ -6,11 +6,12 @@ public class MasterController : MonoBehaviour {
 
     public bool resetPrefs;
     public int bpm;
+    public int hitLeeway;
     private int currentBeat;
     private int partialBeat;
     private int partialMax;
     private Text bpmText;
-    public AudioClip audio;
+    public AudioSource bass;
     //faster startup
 	void Start() { 
         //clear prefs
@@ -22,23 +23,38 @@ public class MasterController : MonoBehaviour {
         //setup bpm counters
         currentBeat = 0;
         partialBeat = 0;
-        partialMax = ( 60) * (int) (1 / Time.fixedDeltaTime); //typically will be 3000, but this is the "bar" the bpm has to fill inorder to be on the next beat
+        partialMax = ( 60) * (int) (1 / Time.fixedDeltaTime); //typically will be 3600, but this is the "bar" the bpm has to fill inorder to be on the next beat
         Debug.Log(partialMax);
         bpmText = GameObject.Find("bpmcounter").GetComponent<Text>();
+        bass = GetComponent<AudioSource>();
     }
 
-    public void onHit() {
-        Debug.Log("player hit");
+    public bool onHit() {
+        int beat = checkBeat();
+        if (beat != -1) {
+            Debug.Log("hit on beat " + beat);
+            return true;
+        }
+        Debug.Log("miss on beat" + currentBeat);
+        return false;
+    }
+
+    public int checkBeat() {
+        if (partialBeat > (partialMax - (bpm * hitLeeway))) {
+            return currentBeat + 1;
+        }
+        if (partialBeat < bpm * hitLeeway) {
+            return currentBeat;
+        }
+        return -1;
     }
 
     void FixedUpdate() {
         partialBeat += bpm; //add the bpm to the bar to fill
         if (partialBeat >= partialMax) { //if filled or overfilled 
-            
+            bass.Play();
             partialBeat = partialBeat - partialMax; //set the partial to the extra left over so eventually beat get back in sync
-            Debug.Log(partialBeat);
             currentBeat++;
-            AudioSource.PlayClipAtPoint(audio, Camera.main.transform.position);
             if (currentBeat > bpm) {
                 currentBeat = 0;
             }
