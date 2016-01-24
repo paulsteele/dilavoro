@@ -1,19 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Track  {
-    //types of attacks, nothing for don't play a note, bash for bash attacks, pierce for piercing attacks, dodge for need to block
-    public enum type {
-        nothing,
-        bash,
-        pierce,
-        dodge
-    }
-    //types of note that should play.
-    public enum notes {
-        A,
-        B
-    }
+    private int bpm; //the beats per minute
+    public int timeNum; //time signature numerator
+    public int timeDen; //time signature denominator
+    public int curBeat; //the current beat
+    public int numLanes; //the number of lanes (number of enemies)
+    //public LinkedList<Enemy> enemylist; //to implement
 
-    private int bpm;
+    LinkedList<Segment> segmentList; //list of segements to loop through
+    
 }
