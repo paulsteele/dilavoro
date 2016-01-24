@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
+
 public class MasterController : MonoBehaviour {
 
     public bool resetPrefs;
