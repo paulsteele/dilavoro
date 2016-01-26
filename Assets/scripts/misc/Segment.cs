@@ -36,5 +36,6 @@ public class Segment {
         typelist = new Type[length];
         notelist = new Note[length];
         this.classification = classification;
+
     }
 }

@@ -9,8 +9,8 @@ public class PlayerController : MonoBehaviour {
     public KeyCode keyAttack;
     public int horizontalMoveSpeed;
     public int jumpSpeed;
-
     private Rigidbody2D body;
+    
     private Vector2 vector;
     private MasterController master;
     private float width;
@@ -25,11 +25,11 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
         body = GetComponent<Rigidbody2D>();
         //get height and width for purposes of collision detection
-        Sprite sp = GetComponent<SpriteRenderer>().sprite;
+        BoxCollider2D sp = GetComponent<BoxCollider2D>();
         width = (sp.bounds.max.x - sp.bounds.min.x) / 2;
         height = (sp.bounds.max.y - sp.bounds.min.y) / 2;
-        width *= body.transform.localScale.x;
-        height *= body.transform.localScale.y;
+        //width *= body.transform.localScale.x;
+        //height *= body.transform.localScale.y;
         //false out all key hit flags
         hitleft = false;
         hitright = false;
@@ -64,21 +64,29 @@ public class PlayerController : MonoBehaviour {
         //left movement
         if (hitleft) {
             //apply instantaneous force to go left
-            deltaSpeedX -= horizontalMoveSpeed;
+            Vector2 topLeft = new Vector2(body.position.x - width - .15f , body.position.y + height);
+            Vector2 bottomRight = new Vector2(body.position.x - width - .16f, body.position.y - (height - .15f));
+            bool hitting = Physics2D.OverlapArea(topLeft, bottomRight);
+            if (!hitting) //only move left if not hitting wall
+                deltaSpeedX -= horizontalMoveSpeed;
         }
         //right movement
         if (hitright) {
             //apply instanteous force to go right
-            deltaSpeedX += horizontalMoveSpeed;
+            Vector2 topLeft = new Vector2(body.position.x + width , body.position.y + height);
+            Vector2 bottomRight = new Vector2(body.position.x + width + .01f, body.position.y - (height -.15f));
+            bool hitting = Physics2D.OverlapArea(topLeft, bottomRight);
+            if (!hitting) //only move right if not hitting wall
+                deltaSpeedX += horizontalMoveSpeed;
         }
         //jump
         if (hitjump) {
 
-            Vector2 topLeft = new Vector2(body.position.x - width, body.position.y - height);
-            Vector2 bottomRight = new Vector2(body.position.x + width, body.position.y - height - 1);
-            bool grounded = Physics2D.OverlapArea(topLeft, bottomRight, LayerMask.NameToLayer("StaticTerrain"));
-            if (grounded && deltaSpeedY.CompareTo(0.0f) == 0) {
-                deltaSpeedY += jumpSpeed;
+            Vector2 topLeft = new Vector2(body.position.x - (width - .1f), body.position.y - height - .1f);
+            Vector2 bottomRight = new Vector2(body.position.x + (width - .1f), body.position.y - height - 1f);
+            bool grounded = Physics2D.OverlapArea(topLeft, bottomRight);
+            if (grounded ) {
+                deltaSpeedY = jumpSpeed;
             }
 
         }
