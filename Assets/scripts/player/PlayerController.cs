@@ -101,7 +101,6 @@ public class PlayerController : MonoBehaviour {
     private bool checkCollision(float topleftxoffset, float topleftyoffset, float bottomrightxoffset, float bottomrightyoffset) {
         Vector2 topLeft = new Vector2(body.position.x + topleftxoffset, body.position.y + topleftyoffset);
         Vector2 bottomRight = new Vector2(body.position.x + bottomrightxoffset, body.position.y + bottomrightyoffset);
-        Debug.DrawLine(topLeft, bottomRight);
         return Physics2D.OverlapArea(topLeft, bottomRight, ~(LayerMask.NameToLayer("Static-Terrain")));
     }
 }
