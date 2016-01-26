@@ -87,8 +87,14 @@ public class PlayerController : MonoBehaviour {
         }
 
         //apply movement
+        //fix to make climbing easier
+        Vector2 pos = body.position;
+        pos.y -= .8f;
+        body.position = pos;
         vector = new Vector2(deltaSpeedX, deltaSpeedY);
         body.velocity = vector;
+        pos.y += .8f;
+        body.position = pos;
     }
 
     //Checks to see if collision with ground occurs is specified region around player's collision box
