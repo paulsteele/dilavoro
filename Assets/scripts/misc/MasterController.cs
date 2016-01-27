@@ -13,6 +13,7 @@ public class MasterController : MonoBehaviour {
     private int partialMax;
     private Text bpmText;
     private AudioSource bass;
+    private Track track;
     //faster startup
 	void Start() { 
         //clear prefs
@@ -28,6 +29,7 @@ public class MasterController : MonoBehaviour {
         Debug.Log(partialMax);
         bpmText = GameObject.Find("bpmcounter").GetComponent<Text>();
         bass = GetComponent<AudioSource>();
+        track = null;
     }
 
     public bool onHit() {
@@ -65,5 +67,9 @@ public class MasterController : MonoBehaviour {
             }
             bpmText.text = "" + currentBeat + " / " + bpm + " BPM";
         }
+    }
+
+    private void addTrack(Track track) {
+        this.track = track;
     }
 }

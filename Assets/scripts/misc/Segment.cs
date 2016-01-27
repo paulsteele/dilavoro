@@ -63,4 +63,8 @@ public class Segment {
             return Note.empty;
         return notelist[index];
     }
+
+    public Classification getClassification() {
+        return classification;
+    }
 }
