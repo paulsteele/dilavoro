@@ -16,7 +16,8 @@ public class Segment {
         nothing,
         bash,
         pierce,
-        dodge
+        dodge,
+        error
     }
 
     //What note should play
@@ -45,7 +46,7 @@ public class Segment {
     }
 
     public bool addBeat(int index, Type type, Note note) {
-        if (index > 0 && index < length) //not valid beat
+        if (index < 0 || index > length) //not valid beat
             return false;
         typelist[index] = type;
         notelist[index] = note;

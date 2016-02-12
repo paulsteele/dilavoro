@@ -2,13 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Enemy : MonoBehaviour {
+public class Enemy {
 
     private HashSet<Segment> offensivePool;
     private HashSet<Segment> defensivePool;
 
 	// Use this for initialization
-	void Start () {
+	public Enemy () {
         offensivePool = new HashSet<Segment>();
         defensivePool = new HashSet<Segment>();
 	}
@@ -39,9 +39,9 @@ public class Enemy : MonoBehaviour {
 
     public void testSegment() {
         Segment s = new Segment(16, Segment.Classification.offensive);
-        s.addBeat(4, Segment.Type.bash, Segment.Note.A);
-        s.addBeat(8, Segment.Type.bash, Segment.Note.A);
-        s.addBeat(12, Segment.Type.bash, Segment.Note.A);
-        s.addBeat(16, Segment.Type.bash, Segment.Note.A);
+        s.addBeat(3, Segment.Type.bash, Segment.Note.A);
+        s.addBeat(7, Segment.Type.bash, Segment.Note.A);
+        s.addBeat(11, Segment.Type.bash, Segment.Note.A);
+        s.addBeat(15, Segment.Type.bash, Segment.Note.A);
     }
 }

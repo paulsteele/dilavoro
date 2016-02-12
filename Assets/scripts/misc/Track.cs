@@ -16,9 +16,7 @@ public class Track  {
         timeDen = 4; //default is 4/4
         numLanes = 0; //start with no lanes
         tempenemylist = new List<Enemy>();
-        enemies = null;
         populated = false;
-        segmentList = null;
     }
 
     public bool isReady() { //Check to see if the track has been populated
@@ -43,5 +41,12 @@ public class Track  {
         populated = true;
         return true;
     }
+
+    public Segment.Type getAction(int lane, int beat) {
+        if (lane < 0 || lane >= numLanes) {
+            return Segment.Type.error;
+        }
+        return Segment.Type.error;
+    } 
 
 }
