@@ -6,16 +6,19 @@ public class Track  {
     public int timeNum; //time signature numerator
     public int timeDen; //time signature denominator
     private int numLanes; //the number of lanes (number of enemies)
-    private LinkedList<Enemy> enemylist; //to implement
+    private List<Enemy> tempenemylist; //temp enemy storage for adding
+    private Enemy[] enemies; //finalized array of enemies
     private bool populated; //whether or not track is complete
-    LinkedList<Segment>[] segmentList; //list of segements to loop through
+    List<Segment>[] segmentList; //list of segements to loop through
 
     public Track() {
         timeNum = 4; //default is 4/4
         timeDen = 4; //default is 4/4
         numLanes = 0; //start with no lanes
-        enemylist = new LinkedList<Enemy>();
+        tempenemylist = new List<Enemy>();
+        enemies = null;
         populated = false;
+        segmentList = null;
     }
 
     public bool isReady() { //Check to see if the track has been populated
@@ -24,28 +27,21 @@ public class Track  {
 
     public void addEnemy(Enemy enemy) {
         numLanes++;
-        enemylist.AddLast(enemy);
+        tempenemylist.Add(enemy);
     }
 
     public bool populate() {
         if (numLanes == 0) //if nothing to populate not finished
             return false;
-        int i = 0;
-        foreach (Enemy e in enemylist) {
-            //temporary selection algo
-            segmentList[i] = e.getSegmentPool(Segment.Classification.offensive);
-            i++;
+        //populate the final array
+        enemies = tempenemylist.ToArray();
+        segmentList = new List<Segment>[numLanes];
+        for (int i = 0; i < numLanes; i++) {
+            segmentList[i] = new List<Segment>();
+            segmentList[i].AddRange(enemies[i].getSegmentPool(Segment.Classification.offensive));
         }
-
         populated = true;
         return true;
     }
 
-    public LinkedList<Segment> getLane(int index) {
-        if (index >= 0 && index < numLanes) {
-            return segmentList[index];
-        }
-        else
-            return null;
-    }
 }

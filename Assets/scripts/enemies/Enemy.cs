@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour {
 
-    private LinkedList<Segment> offensivePool;
-    private LinkedList<Segment> defensivePool;
+    private HashSet<Segment> offensivePool;
+    private HashSet<Segment> defensivePool;
 
 	// Use this for initialization
 	void Start () {
-        offensivePool = new LinkedList<Segment>();
-        defensivePool = new LinkedList<Segment>();
+        offensivePool = new HashSet<Segment>();
+        defensivePool = new HashSet<Segment>();
 	}
 	
 	// Update is called once per frame
@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour {
 	
 	}
 
-    public LinkedList<Segment> getSegmentPool(Segment.Classification classification) {
+    public HashSet<Segment> getSegmentPool(Segment.Classification classification) {
         if (classification == Segment.Classification.offensive) {
             return offensivePool;
         }
@@ -30,10 +30,10 @@ public class Enemy : MonoBehaviour {
 
     public void addSegment(Segment segment) {
         if (segment.getClassification() == Segment.Classification.offensive) {
-            offensivePool.AddLast(segment);
+            offensivePool.Add(segment);
         }
         if (segment.getClassification() == Segment.Classification.defensive) {
-            defensivePool.AddLast(segment);
+            defensivePool.Add(segment);
         }
     }
 

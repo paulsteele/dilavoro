@@ -73,7 +73,7 @@ public class MasterController : MonoBehaviour {
                 currentBeat = 0;
             }
             bpmText.text = "" + currentBeat + " / " + bpm + " BPM";
-            Debug.Log(track.getLane(0).)
+            
         }
     }
 
