@@ -32,7 +32,7 @@ public class Segment {
     private Note[] notelist; //the notes to play
 
     //create segment with specified beat length
-    Segment(int length, Classification classification) {
+    public Segment(int length, Classification classification) {
         this.length = length;
         typelist = new Type[length];
         notelist = new Note[length];

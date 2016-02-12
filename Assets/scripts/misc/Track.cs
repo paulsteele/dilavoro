@@ -10,11 +10,11 @@ public class Track  {
     private bool populated; //whether or not track is complete
     LinkedList<Segment>[] segmentList; //list of segements to loop through
 
-    Track() {
+    public Track() {
         timeNum = 4; //default is 4/4
         timeDen = 4; //default is 4/4
         numLanes = 0; //start with no lanes
-        enemylist = null;
+        enemylist = new LinkedList<Enemy>();
         populated = false;
     }
 
@@ -30,8 +30,11 @@ public class Track  {
     public bool populate() {
         if (numLanes == 0) //if nothing to populate not finished
             return false;
-        for (int i = 0; i < numLanes; i++) { //initialize 
-            segmentList[i] = new LinkedList<Segment>();
+        int i = 0;
+        foreach (Enemy e in enemylist) {
+            //temporary selection algo
+            segmentList[i] = e.getSegmentPool(Segment.Classification.offensive);
+            i++;
         }
 
         populated = true;

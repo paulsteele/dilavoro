@@ -30,6 +30,13 @@ public class MasterController : MonoBehaviour {
         bpmText = GameObject.Find("bpmcounter").GetComponent<Text>();
         bass = GetComponent<AudioSource>();
         track = null;
+
+        //for testing
+        addTrack(new Track());
+        Enemy e = new Enemy();
+        e.testSegment();
+        track.addEnemy(e);
+        track.populate();
     }
 
     public bool onHit() {
@@ -66,6 +73,7 @@ public class MasterController : MonoBehaviour {
                 currentBeat = 0;
             }
             bpmText.text = "" + currentBeat + " / " + bpm + " BPM";
+            Debug.Log(track.getLane(0).)
         }
     }
 
