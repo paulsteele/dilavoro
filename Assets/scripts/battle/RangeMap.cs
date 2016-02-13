@@ -32,3 +32,7 @@ public class RangeMap {
         return -1;
     }
 }
+
+class tester {
+
+}
