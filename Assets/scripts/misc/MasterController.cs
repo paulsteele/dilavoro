@@ -6,6 +6,7 @@ using System.Collections;
 public class MasterController : MonoBehaviour {
 
     public bool resetPrefs;
+    public bool runTests;
     public int bpm;
     public int hitLeeway;
     private int currentBeat;
@@ -22,6 +23,10 @@ public class MasterController : MonoBehaviour {
             Debug.Log("Prefs reset");
             Application.Quit();
         }
+
+        if (runTests) {
+            Tester.RunAllTests();
+        }
         //setup bpm counters
         currentBeat = 0;
         partialBeat = 0;
@@ -32,11 +37,12 @@ public class MasterController : MonoBehaviour {
         track = null;
 
         //for testing
-        addTrack(new Track());
+        /*addTrack(new Track());
         Enemy e = new Enemy();
         e.testSegment();
         track.addEnemy(e);
         track.populate();
+        */
     }
 
     public bool onHit() {
