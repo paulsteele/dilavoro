@@ -36,12 +36,4 @@ public class Enemy {
             defensivePool.Add(segment);
         }
     }
-
-    public void testSegment() {
-        Segment s = new Segment(16, Segment.Classification.offensive);
-        s.addBeat(3, Segment.Type.bash, Segment.Note.A);
-        s.addBeat(7, Segment.Type.bash, Segment.Note.A);
-        s.addBeat(11, Segment.Type.bash, Segment.Note.A);
-        s.addBeat(15, Segment.Type.bash, Segment.Note.A);
-    }
 }

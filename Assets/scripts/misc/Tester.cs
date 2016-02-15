@@ -5,8 +5,9 @@ public class Tester {
     static int passing = 0;
     static int failing = 0;
 
+
     //Testing Master Caller
-    public static void RunAllTests() {
+    public static void RunAllTests(MasterController master) {
         passing = 0;
         failing = 0;
 
@@ -14,8 +15,28 @@ public class Tester {
             passing++;
         else
             failing++;
-        
+        testTrack(master);
     }
+
+    public static void testTrack(MasterController master) {
+        Track track = new Track();
+        Enemy e = new Enemy();
+        e.addSegment(getTestSegment());
+        track.addEnemy(e);
+        track.populate();
+        master.addTrack(track);
+        master.setBattle(true);
+    }
+
+    public static Segment getTestSegment() {
+        Segment s = new Segment(16, Segment.Classification.offensive);
+        s.addBeat(3, Segment.Type.bash, Segment.Note.A);
+        s.addBeat(7, Segment.Type.bash, Segment.Note.A);
+        s.addBeat(11, Segment.Type.bash, Segment.Note.A);
+        s.addBeat(15, Segment.Type.bash, Segment.Note.A);
+        return s;
+    }
+
 
     //test function to check if working
     private static bool TestRangeMap() {

@@ -48,21 +48,24 @@ public class Track  {
                 maxvalue += s.getLength();
             }
             rangeMaps[i] = new RangeMap(numIndexes, maxvalue);
-            maxvalue = 0;
             foreach (Segment s in segmentArray[i]) {
-                maxvalue += s.getLength();
-                rangeMaps[i].addKey(maxvalue);
+                rangeMaps[i].addKey(s.getLength());
             }
         }
         populated = true;
         return true;
     }
 
+    public int getNumLanes() {
+        return numLanes;
+    }
+
     public Segment.Type getAction(int lane, int beat) {
         if (lane < 0 || lane >= numLanes) {
             return Segment.Type.error;
         }
-        return Segment.Type.error;
+        BeatCoordinate bc = rangeMaps[lane].getBeatCoordinate(beat);
+        return segmentArray[lane][bc.index].getType(bc.position);
     } 
 
 }

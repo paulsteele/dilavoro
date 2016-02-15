@@ -15,6 +15,7 @@ public class MasterController : MonoBehaviour {
     private Text bpmText;
     private AudioSource bass;
     private Track track;
+    private bool inBattle;
     //faster startup
 	void Start() { 
         //clear prefs
@@ -22,10 +23,6 @@ public class MasterController : MonoBehaviour {
             PlayerPrefs.DeleteAll();
             Debug.Log("Prefs reset");
             Application.Quit();
-        }
-
-        if (runTests) {
-            Tester.RunAllTests();
         }
         //setup bpm counters
         currentBeat = 0;
@@ -35,6 +32,10 @@ public class MasterController : MonoBehaviour {
         bpmText = GameObject.Find("bpmcounter").GetComponent<Text>();
         bass = GetComponent<AudioSource>();
         track = null;
+        inBattle = false;
+        if (runTests) {
+            Tester.RunAllTests(this);
+        }
 
         //for testing
         /*addTrack(new Track());
@@ -71,6 +72,11 @@ public class MasterController : MonoBehaviour {
 
     void FixedUpdate() {
         bool beatChanged = advanceBeat();
+        if (beatChanged && inBattle) {
+            for (int i = 0; i < track.getNumLanes(); i++) {
+                Debug.Log("beat " + currentBeat + " : " + track.getAction(i, currentBeat));
+            }
+        }
     }
 
     //returns true if beat changed
@@ -89,7 +95,11 @@ public class MasterController : MonoBehaviour {
         return false;
     }
 
-    private void addTrack(Track track) {
+    public void addTrack(Track track) {
         this.track = track;
+    }
+
+    public void setBattle(bool battle) {
+        this.inBattle = battle;
     }
 }

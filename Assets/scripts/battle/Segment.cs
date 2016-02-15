@@ -54,13 +54,13 @@ public class Segment {
     }
 
     public Type getType(int index) {
-        if (index > 0 && index < length) //not valid beat
+        if (index < 0 || index >= length) //not valid beat
             return Type.nothing;
         return typelist[index];
     }
 
     public Note getNote(int index) {
-        if (index > 0 && index < length) //not valid beat
+        if (index < 0 || index >= length) //not valid beat
             return Note.empty;
         return notelist[index];
     }
