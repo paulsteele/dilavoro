@@ -85,7 +85,7 @@ public class MasterController : MonoBehaviour {
         beatsPerFrame = (bpm / 60.0f) / 60.0f;
         widthPerFrame = beatsPerFrame * widthPerBeat;
         trackElements = new List<TrackElement>();
-        TrackElement one = new TrackElement(0, 85, 30, measureLine);
+        /*TrackElement one = new TrackElement(0, 85, 30, measureLine);
         TrackElement two = new TrackElement(0, 85 + (16 * widthPerBeat), 30, measureLine);
         TrackElement three = new TrackElement(0, 85 + (32 * widthPerBeat), 30, measureLine);
         TrackElement four = new TrackElement(0, 85 + (48 * widthPerBeat), 30, measureLine);
@@ -95,7 +95,7 @@ public class MasterController : MonoBehaviour {
         trackElements.Add(three);
         trackElements.Add(four);
         trackElements.Add(five);
-
+        */
 
         //run tests at end so no errors when doing integration testing
         if (runTests) {
@@ -141,24 +141,42 @@ public class MasterController : MonoBehaviour {
 
     //beat calculations are very dependent on time and not framerate
     void FixedUpdate() {
-        if (inBattle) {
-            updateTrackElements();
-        }
-
         //do calculataions for adavancing the beat and see if a beat changed
         bool beatChanged = advanceBeat();
         //do actions when beats change
-        if (beatChanged && inBattle) {
-            for (int i = 0; i < track.getNumLanes(); i++) {
-                Debug.Log("beat " + currentBeat + " : " + track.getAction(i, currentBeat));
+
+        if (inBattle) {
+            updateTrackElements();
+            if (beatChanged) {
+
+                spawnTrackElements(false);
+                for (int i = 0; i < track.getNumLanes(); i++) {
+                    Debug.Log("beat " + currentBeat + " : " + track.getAction(i, currentBeat));
+                }
             }
         }
     }
 
+    void spawnTrackElements(bool initial) {
+        if (initial) {
+            //do fancy leading stuff here
+        }
+        if (currentBeat % 16 == 0) {
+            trackElements.Add(new TrackElement(0, Screen.width, 30, measureLine));
+        }
+    }
+
+
     //responsible for having track elements move left across the screen at right speed, and removing when off screen
     void updateTrackElements() {
-        foreach (TrackElement te in trackElements) {
+
+        List<TrackElement> copy = new List<TrackElement>(trackElements);
+        foreach (TrackElement te in copy) {
             te.addX(-widthPerFrame);
+            //make remove elements that are past
+            if (te.getX() < 0.0f) {
+                trackElements.Remove(te);
+            }
         }
     }
 
@@ -166,9 +184,10 @@ public class MasterController : MonoBehaviour {
         if (inBattle) {
             //the bar
             GUI.DrawTexture(new Rect(0f, Screen.height - 90, Screen.width, 30), laneTexture, ScaleMode.StretchToFill);
-            
+
             //draw measure thing
 
+            
             foreach (TrackElement te in trackElements){
                 te.draw();
             }
@@ -196,7 +215,7 @@ public class MasterController : MonoBehaviour {
             partialBeat = partialBeat - beatThreshold; 
             //advance the currentBeat and reset to 0 if needed
             currentBeat++;
-            if (currentBeat > bpm) {
+            if (currentBeat >= bpm) {
                 currentBeat = 0;
             }
             //change the text of the UI element
@@ -214,5 +233,8 @@ public class MasterController : MonoBehaviour {
     //sets the inBattle flage, calling true on this is the last step for actually starting the battle sequence. Calling false is the last step for ending battle
     public void setBattle(bool battle) {
         this.inBattle = battle;
+        if (battle) {
+            spawnTrackElements(true);
+        }
     }
 }
