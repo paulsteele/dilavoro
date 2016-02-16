@@ -28,9 +28,11 @@ public class Track  {
     private List<Enemy> enemyList;
     //two dimensional jagged array for storing the segments after they've been processed, the first index is
     //the lane, the second is the segment index(NOT BEAT INDEX, USE RANGEMAP TO DETERMINE)
-    private Segment[][] segmentArray;
-    //the rangeMap for each lane
-    private RangeMap[] rangeMaps;
+    private List<Segment>[] segmentList;
+    //the array of beats, contains what will be accessed during battle
+    private Beat[][] beatArray;
+
+
     //simply for UI for display time signature
     //time signature numerator
     public int timeNum;
@@ -72,26 +74,34 @@ public class Track  {
         if (numLanes == 0) 
             return false;
         //set up the segment array to get ready to hold segments
-        segmentArray = new Segment[numLanes][];
-        //set up rangeMap array to hold rangemaps they need to
-        rangeMaps = new RangeMap[numLanes];
+        segmentList = new List<Segment>[numLanes];
+        //set up beat array to get ready to hold beats
+        beatArray = new Beat[numLanes][];
         //counter variable set up
         int i = 0;
         //do for each lane(enemy)
         foreach (Enemy e in enemyList) {
             //create list to hold the segments in order as they'd like to be stored
-            List<Segment> segmentList = new List<Segment>();
+            segmentList[i] = new List<Segment>();
             //SELECTION ALGO GOES HERE
-            segmentList.AddRange(e.getSegmentPool(Segment.Classification.offensive));
-            //convert the list to a more access efficient array
-            segmentArray[i] = segmentList.ToArray();
-            //get the number of segments in the list
-            int numSegments = segmentArray[i].Length;
-            //create the rangemap with the number of indexes equaling the number of segments, and the max number of beats equal to the max found
-            rangeMaps[i] = new RangeMap(numSegments);
-            //now loop through and add all keys into rangeMap 
-            foreach (Segment s in segmentArray[i]) {
-                rangeMaps[i].addKey(s.getLength());
+            segmentList[i].AddRange(e.getSegmentPool(Segment.Classification.offensive));
+            //find max number of beats in the list
+            int numberOfBeats = 0;
+            foreach (Segment s in segmentList[i]) {
+                numberOfBeats += s.getLength();
+            }
+            //set up beatarray
+            beatArray[i] = new Beat[numberOfBeats];
+            //counter variable
+            int j = 0;
+            //go through each segment
+            foreach (Segment s in segmentList[i]) {
+                //go through each beat in the segment
+                for (int k = 0; k < s.getLength(); k++) {
+                    //assign the beat array the correct beat
+                    beatArray[i][j] = s.getBeat(k);
+                    j++;
+                }
             }
             //advance counter
             i++;
@@ -109,15 +119,15 @@ public class Track  {
     //returns the action found on the specified lane, on the specified beat number
     //accounts for segments smaller than bpm
     //OVERSIGHT DOES NOT ACCOUNT FOR SEGMENTS LONGER THAN BPM
-    public Segment.Type getAction(int lane, int beat) {
+    public Beat.Type getAction(int lane, int beat) {
         //make sure a valid lane size
         if (lane < 0 || lane >= numLanes) {
-            return Segment.Type.error;
+            return Beat.Type.error;
         }
-        //get obtain both the index of the desired segment(bc.index), and the index of the note at the given beat(bc.position)
-        BeatCoordinate bc = rangeMaps[lane].getBeatCoordinate(beat);
-        //use that info to return the segment type found
-        return segmentArray[lane][bc.index].getType(bc.position);
+        //get the beat looped throught the size
+        beat = beat % beatArray[lane].Length; 
+
+        return beatArray[lane][beat].getType();
     } 
 
 }
