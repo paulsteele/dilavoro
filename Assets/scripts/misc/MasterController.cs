@@ -1,6 +1,7 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /**
 MasterController is in charge of coordinating everything that goes on the backend of the system.
@@ -44,6 +45,17 @@ public class MasterController : MonoBehaviour {
     //the bass sound
     private AudioSource bass;
     public Texture laneTexture;
+    public Texture leftAccept;
+    public Texture rightAccept;
+    public Texture measureLine;
+
+    int beatsPerBar = 16;
+    float numVisibleMeasures = 5.0f;
+    float measureWidth;
+    float widthPerBeat;
+    float beatsPerFrame;
+    float widthPerFrame;
+    List<TrackElement> trackElements;
     
     //Startup functions, does checking for test running and reset prefs
     //the initializing everything that needs intializing
@@ -68,7 +80,22 @@ public class MasterController : MonoBehaviour {
         //find UI components and assign to fields
         bpmText = GameObject.Find("bpmcounter").GetComponent<Text>();
         bass = GetComponent<AudioSource>();
-        
+        measureWidth = Screen.width / numVisibleMeasures;
+        widthPerBeat = measureWidth / 16.0f;
+        beatsPerFrame = (bpm / 60.0f) / 60.0f;
+        widthPerFrame = beatsPerFrame * widthPerBeat;
+        trackElements = new List<TrackElement>();
+        TrackElement one = new TrackElement(0, 85, 30, measureLine);
+        TrackElement two = new TrackElement(0, 85 + (16 * widthPerBeat), 30, measureLine);
+        TrackElement three = new TrackElement(0, 85 + (32 * widthPerBeat), 30, measureLine);
+        TrackElement four = new TrackElement(0, 85 + (48 * widthPerBeat), 30, measureLine);
+        TrackElement five = new TrackElement(0, 85 + (64 * widthPerBeat), 30, measureLine);
+        trackElements.Add(one);
+        trackElements.Add(two);
+        trackElements.Add(three);
+        trackElements.Add(four);
+        trackElements.Add(five);
+
 
         //run tests at end so no errors when doing integration testing
         if (runTests) {
@@ -114,6 +141,10 @@ public class MasterController : MonoBehaviour {
 
     //beat calculations are very dependent on time and not framerate
     void FixedUpdate() {
+        if (inBattle) {
+            updateTrackElements();
+        }
+
         //do calculataions for adavancing the beat and see if a beat changed
         bool beatChanged = advanceBeat();
         //do actions when beats change
@@ -124,12 +155,33 @@ public class MasterController : MonoBehaviour {
         }
     }
 
+    //responsible for having track elements move left across the screen at right speed, and removing when off screen
+    void updateTrackElements() {
+        foreach (TrackElement te in trackElements) {
+            te.addX(-widthPerFrame);
+        }
+    }
+
     void OnGUI() {
         if (inBattle) {
+            //the bar
             GUI.DrawTexture(new Rect(0f, Screen.height - 90, Screen.width, 30), laneTexture, ScaleMode.StretchToFill);
+            
+            //draw measure thing
+
+            foreach (TrackElement te in trackElements){
+                te.draw();
+            }
+
+            //left accept
+            GUI.DrawTexture(new Rect(60, Screen.height - 90, 60, 30), leftAccept, ScaleMode.StretchToFill);
+            //right accept
+            GUI.DrawTexture(new Rect(80, Screen.height - 90, 60, 30), rightAccept, ScaleMode.StretchToFill);
         }
-        
+
     }
+
+    
 
     //Perform operations for advancing the beat; the beat must be moved up by 4 * bpm to correctly account for time
     //will return true if the beat managed to get higher than the threshold
