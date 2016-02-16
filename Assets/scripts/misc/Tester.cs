@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+/**
+Simpler Test Driver than Unity Test Tools, was way too complex, if looking to run, check box in MasterController, runTests
+**/
 public class Tester {
     static int passing = 0;
     static int failing = 0;
@@ -24,7 +26,7 @@ public class Tester {
         e.addSegment(getTestSegment());
         track.addEnemy(e);
         track.populate();
-        master.addTrack(track);
+        master.setTrack(track);
         master.setBattle(true);
     }
 
@@ -41,11 +43,7 @@ public class Tester {
     //test function to check if working
     private static bool TestRangeMap() {
         int[] vals = { 37, 14, 56, 22 };
-        int max = 0;
-        for (int i = 0; i < vals.Length; i++) {
-            max += vals[i];
-        }
-        RangeMap rm = new RangeMap(vals.Length, max);
+        RangeMap rm = new RangeMap(vals.Length);
         for (int i = 0; i < vals.Length; i++) {
             rm.addKey(vals[i]);
         }

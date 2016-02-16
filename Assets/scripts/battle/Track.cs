@@ -1,70 +1,122 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+/**
+Track is the system used collection for keeping track of which segments go where
+    It consists of an array of enemies that will be drawn from to pick segments from
+    it has a number of 'Lanes' which are each individual enemeis
+    the player will only be able to be on one lane at any given time each lane is essentially the traditional DDR lane
+    a selection algorithm will be used to properly set up the lanes
+    OFFENSIVE segments from each lane MAY overlap, so the player gets to choose whom they attack
+    DEFENSIVE segments MUST NOT overlap, so that the player is never forced to take damage
+    the algorithm will do all the hard work in setting things up so they work
+    an example (O = offensive, D = defensive)
+    |D-D-|----|O-O-|----|----|----|
+    |----|-D-D|-O--|----|----|----|
+    |----|----|--O-|----|----|-DD-|
+    |----|----|--OO|-D--|----|----|
+    |----|----|OOOO|----|-DD-|----|
+    segments will loop and be modified as enemies are eleminated
+    on the enemies that was eliminated, a replacement segment colum will be found
 
+    when adding enemies they will be stored in a list, once populate() is called a faster access method will be switched to
+**/
 public class Track  {
-    public int timeNum; //time signature numerator
-    public int timeDen; //time signature denominator
-    private int numLanes; //the number of lanes (number of enemies)
-    private List<Enemy> tempenemylist; //temp enemy storage for adding
-    private Enemy[] enemies; //finalized array of enemies
-    private bool populated; //whether or not track is complete
-    private List<Segment> segmentList; //list of segements to loop through, only for temp storage
+    //the number of lanes (number of enemies)
+    private int numLanes;
+    //enemy storage for adding before populating
+    private List<Enemy> enemyList;
+    //two dimensional jagged array for storing the segments after they've been processed, the first index is
+    //the lane, the second is the segment index(NOT BEAT INDEX, USE RANGEMAP TO DETERMINE)
     private Segment[][] segmentArray;
-    private RangeMap[] rangeMaps; //the range maps for each track
+    //the rangeMap for each lane
+    private RangeMap[] rangeMaps;
+    //simply for UI for display time signature
+    //time signature numerator
+    public int timeNum;
+    //time signature denominator
+    public int timeDen;
 
+
+    //whether or not track is full and populated
+    private bool populated; 
+    
+    //set up inital values
     public Track() {
-        timeNum = 4; //default is 4/4
-        timeDen = 4; //default is 4/4
-        numLanes = 0; //start with no lanes
-        tempenemylist = new List<Enemy>();
+        //default time signature is 4/4
+        timeNum = 4;
+        timeDen = 4;
+        //start with no lanes
+        numLanes = 0; 
+        //start with empty enemy list
+        enemyList = new List<Enemy>();
+        //start out not populated
         populated = false;
     }
 
-    public bool isReady() { //Check to see if the track has been populated
+    //Check to see if the track has been populated
+    public bool isReady() { 
         return populated;
     }
 
+    //Adds an enemy reference to the tracks selection pool
     public void addEnemy(Enemy enemy) {
         numLanes++;
-        tempenemylist.Add(enemy);
+        enemyList.Add(enemy);
     }
 
+    //handle populating the needed data structures for efficient running
+    //must move enemies to an array
     public bool populate() {
-        if (numLanes == 0) //if nothing to populate not finished
+        //if nothing to populate not finished
+        if (numLanes == 0) 
             return false;
-        //populate the final array
-        enemies = tempenemylist.ToArray();
+        //set up the segment array to get ready to hold segments
         segmentArray = new Segment[numLanes][];
+        //set up rangeMap array to hold rangemaps they need to
         rangeMaps = new RangeMap[numLanes];
-        for (int i = 0; i < numLanes; i++) {
-            segmentList = new List<Segment>();
-            segmentList.AddRange(enemies[i].getSegmentPool(Segment.Classification.offensive));
+        //counter variable set up
+        int i = 0;
+        //do for each lane(enemy)
+        foreach (Enemy e in enemyList) {
+            //create list to hold the segments in order as they'd like to be stored
+            List<Segment> segmentList = new List<Segment>();
+            //SELECTION ALGO GOES HERE
+            segmentList.AddRange(e.getSegmentPool(Segment.Classification.offensive));
+            //convert the list to a more access efficient array
             segmentArray[i] = segmentList.ToArray();
-            //now create the rangemap
-            int numIndexes = segmentArray[i].Length;
-            int maxvalue = 0;
-            foreach (Segment s in segmentArray[i]) {
-                maxvalue += s.getLength();
-            }
-            rangeMaps[i] = new RangeMap(numIndexes, maxvalue);
+            //get the number of segments in the list
+            int numSegments = segmentArray[i].Length;
+            //create the rangemap with the number of indexes equaling the number of segments, and the max number of beats equal to the max found
+            rangeMaps[i] = new RangeMap(numSegments);
+            //now loop through and add all keys into rangeMap 
             foreach (Segment s in segmentArray[i]) {
                 rangeMaps[i].addKey(s.getLength());
             }
+            //advance counter
+            i++;
         }
+        //set populated, and return
         populated = true;
         return true;
     }
 
+    //returns the number of lanes currently on the track
     public int getNumLanes() {
         return numLanes;
     }
 
+    //returns the action found on the specified lane, on the specified beat number
+    //accounts for segments smaller than bpm
+    //OVERSIGHT DOES NOT ACCOUNT FOR SEGMENTS LONGER THAN BPM
     public Segment.Type getAction(int lane, int beat) {
+        //make sure a valid lane size
         if (lane < 0 || lane >= numLanes) {
             return Segment.Type.error;
         }
+        //get obtain both the index of the desired segment(bc.index), and the index of the note at the given beat(bc.position)
         BeatCoordinate bc = rangeMaps[lane].getBeatCoordinate(beat);
+        //use that info to return the segment type found
         return segmentArray[lane][bc.index].getType(bc.position);
     } 
 
