@@ -43,6 +43,7 @@ public class MasterController : MonoBehaviour {
     private Text bpmText;
     //the bass sound
     private AudioSource bass;
+    public Texture laneTexture;
     
     //Startup functions, does checking for test running and reset prefs
     //the initializing everything that needs intializing
@@ -121,6 +122,13 @@ public class MasterController : MonoBehaviour {
                 Debug.Log("beat " + currentBeat + " : " + track.getAction(i, currentBeat));
             }
         }
+    }
+
+    void OnGUI() {
+        if (inBattle) {
+            GUI.DrawTexture(new Rect(0f, Screen.height - 90, Screen.width, 30), laneTexture, ScaleMode.StretchToFill);
+        }
+        
     }
 
     //Perform operations for advancing the beat; the beat must be moved up by 4 * bpm to correctly account for time
