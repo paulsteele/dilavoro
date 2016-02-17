@@ -85,17 +85,6 @@ public class MasterController : MonoBehaviour {
         beatsPerFrame = (bpm / 60.0f) / 60.0f;
         widthPerFrame = beatsPerFrame * widthPerBeat;
         trackElements = new List<TrackElement>();
-        /*TrackElement one = new TrackElement(0, 85, 30, measureLine);
-        TrackElement two = new TrackElement(0, 85 + (16 * widthPerBeat), 30, measureLine);
-        TrackElement three = new TrackElement(0, 85 + (32 * widthPerBeat), 30, measureLine);
-        TrackElement four = new TrackElement(0, 85 + (48 * widthPerBeat), 30, measureLine);
-        TrackElement five = new TrackElement(0, 85 + (64 * widthPerBeat), 30, measureLine);
-        trackElements.Add(one);
-        trackElements.Add(two);
-        trackElements.Add(three);
-        trackElements.Add(four);
-        trackElements.Add(five);
-        */
 
         //run tests at end so no errors when doing integration testing
         if (runTests) {
@@ -160,11 +149,29 @@ public class MasterController : MonoBehaviour {
     void spawnTrackElements(bool initial) {
         if (initial) {
             //do fancy leading stuff here
+            //-16 to -80
+            for (int i = 0; i < 80 - 16; i++) {
+                List<TrackElement> roundElements = getTrackElements(i);
+                foreach (TrackElement te in roundElements) {
+                    te.addX(-widthPerBeat * (80 - 16 - i));
+                }
+                trackElements.AddRange(roundElements);
+            }
         }
-        if (currentBeat % 16 == 0) {
-            trackElements.Add(new TrackElement(0, Screen.width, 30, measureLine));
-        }
+        int offset = 80;
+        trackElements.AddRange(getTrackElements(currentBeat + offset));
+        
     }
+
+    List<TrackElement> getTrackElements(int beat) {
+        List<TrackElement> elements = new List<TrackElement>();
+        //add elements measure bars
+        if (beat % 16 == 0) {
+            elements.Add(new TrackElement(0, Screen.width, 30, measureLine));
+        }
+
+        return elements;
+    } 
 
 
     //responsible for having track elements move left across the screen at right speed, and removing when off screen
@@ -234,7 +241,8 @@ public class MasterController : MonoBehaviour {
     public void setBattle(bool battle) {
         this.inBattle = battle;
         if (battle) {
-            currentBeat = -81;
+            currentBeat = -16;
+            spawnTrackElements(true);
         }
     }
 }
