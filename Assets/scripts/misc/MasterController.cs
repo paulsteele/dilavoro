@@ -50,7 +50,7 @@ public class MasterController : MonoBehaviour {
     public Texture measureLine;
 
     int beatsPerBar = 16;
-    float numVisibleMeasures = 5.0f;
+    float numVisibleMeasures = 5.5f;
     float measureWidth;
     float widthPerBeat;
     float beatsPerFrame;
@@ -193,9 +193,9 @@ public class MasterController : MonoBehaviour {
             }
 
             //left accept
-            GUI.DrawTexture(new Rect(60, Screen.height - 90, 60, 30), leftAccept, ScaleMode.StretchToFill);
+            GUI.DrawTexture(new Rect( Screen.width - (numVisibleMeasures * widthPerBeat * 16) - 7 + 45, Screen.height - 90, 60, 30), leftAccept, ScaleMode.StretchToFill);
             //right accept
-            GUI.DrawTexture(new Rect(80, Screen.height - 90, 60, 30), rightAccept, ScaleMode.StretchToFill);
+            GUI.DrawTexture(new Rect(Screen.width - (numVisibleMeasures * widthPerBeat * 16) + 7 + 45, Screen.height - 90, 60, 30), rightAccept, ScaleMode.StretchToFill);
         }
 
     }
@@ -234,7 +234,7 @@ public class MasterController : MonoBehaviour {
     public void setBattle(bool battle) {
         this.inBattle = battle;
         if (battle) {
-            spawnTrackElements(true);
+            currentBeat = -81;
         }
     }
 }
