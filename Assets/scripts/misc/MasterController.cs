@@ -48,6 +48,7 @@ public class MasterController : MonoBehaviour {
     public Texture leftAccept;
     public Texture rightAccept;
     public Texture measureLine;
+    public Texture beatTexture;
 
     int beatsPerBar = 16;
     float numVisibleMeasures = 5.5f;
@@ -170,6 +171,10 @@ public class MasterController : MonoBehaviour {
             elements.Add(new TrackElement(0, Screen.width, 30, measureLine));
         }
 
+        if (track.getAction(0, beat) == Beat.Type.bash) {
+            elements.Add(new TrackElement(0, Screen.width, 30, beatTexture));
+        }
+
         return elements;
     } 
 
@@ -184,6 +189,7 @@ public class MasterController : MonoBehaviour {
             if (te.getX() < 0.0f) {
                 trackElements.Remove(te);
             }
+
         }
     }
 

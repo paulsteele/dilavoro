@@ -121,7 +121,7 @@ public class Track  {
     //OVERSIGHT DOES NOT ACCOUNT FOR SEGMENTS LONGER THAN BPM
     public Beat.Type getAction(int lane, int beat) {
         //make sure a valid lane size
-        if (lane < 0 || lane >= numLanes) {
+        if (lane < 0 || lane >= numLanes || beat < 0) {
             return Beat.Type.error;
         }
         //get the beat looped throught the size
