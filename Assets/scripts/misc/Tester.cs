@@ -17,12 +17,8 @@ public class Tester {
     }
 
     public static void testTrack(MasterController master) {
-        Track track = new Track();
         Enemy e = new Enemy();
         e.addSegment(getTestSegment());
-        track.addEnemy(e);
-        track.populate();
-        master.setTrack(track);
         master.setBattle(true);
     }
 

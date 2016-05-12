@@ -35,8 +35,6 @@ public class MasterController : MonoBehaviour {
     private int beatThreshold;
     //the amount of leeway the player has to hit the note they want
     public int hitLeeway;
-    //the track that is currently loaded, null if no track loaded
-    private Track track;
     //whether or not a battle is currently running, track better not be null when this is true
     private bool inBattle;
     //UI STUFF VERY LIKELY TO CHANGE
@@ -56,7 +54,6 @@ public class MasterController : MonoBehaviour {
     float widthPerBeat;
     float beatsPerFrame;
     float widthPerFrame;
-    List<TrackElement> trackElements;
     
     //Startup functions, does checking for test running and reset prefs
     //the initializing everything that needs intializing
@@ -68,7 +65,6 @@ public class MasterController : MonoBehaviour {
             Application.Quit();
         }
         //set up track and inBattle fields
-        track = null;
         inBattle = false;
         //setup beat counters to inital values
         currentBeat = 0;
@@ -85,7 +81,6 @@ public class MasterController : MonoBehaviour {
         widthPerBeat = measureWidth / 16.0f;
         beatsPerFrame = (bpm / 60.0f) / 60.0f;
         widthPerFrame = beatsPerFrame * widthPerBeat;
-        trackElements = new List<TrackElement>();
 
         //run tests at end so no errors when doing integration testing
         if (runTests) {
@@ -136,62 +131,17 @@ public class MasterController : MonoBehaviour {
         //do actions when beats change
 
         if (inBattle) {
-            updateTrackElements();
+            
             if (beatChanged) {
 
-                spawnTrackElements(false);
-                for (int i = 0; i < track.getNumLanes(); i++) {
-                    Debug.Log("beat " + currentBeat + " : " + track.getAction(i, currentBeat));
-                }
             }
         }
     }
 
-    void spawnTrackElements(bool initial) {
-        if (initial) {
-            //do fancy leading stuff here
-            //-16 to -80
-            for (int i = 0; i < 80 - 16; i++) {
-                List<TrackElement> roundElements = getTrackElements(i);
-                foreach (TrackElement te in roundElements) {
-                    te.addX(-widthPerBeat * (80 - 16 - i));
-                }
-                trackElements.AddRange(roundElements);
-            }
-        }
-        int offset = 80;
-        trackElements.AddRange(getTrackElements(currentBeat + offset));
+    void spawnTrackElements() {
         
-    }
-
-    List<TrackElement> getTrackElements(int beat) {
-        List<TrackElement> elements = new List<TrackElement>();
-        //add elements measure bars
-        if (beat % 16 == 0) {
-            elements.Add(new TrackElement(0, Screen.width, 30, measureLine));
-        }
-
-        if (track.getAction(0, beat) == Beat.Type.bash) {
-            elements.Add(new TrackElement(0, Screen.width, 30, beatTexture));
-        }
-
-        return elements;
     } 
 
-
-    //responsible for having track elements move left across the screen at right speed, and removing when off screen
-    void updateTrackElements() {
-
-        List<TrackElement> copy = new List<TrackElement>(trackElements);
-        foreach (TrackElement te in copy) {
-            te.addX(-widthPerFrame);
-            //make remove elements that are past
-            if (te.getX() < 0.0f) {
-                trackElements.Remove(te);
-            }
-
-        }
-    }
 
     void OnGUI() {
         if (inBattle) {
@@ -199,11 +149,6 @@ public class MasterController : MonoBehaviour {
             GUI.DrawTexture(new Rect(0f, Screen.height - 90, Screen.width, 30), laneTexture, ScaleMode.StretchToFill);
 
             //draw measure thing
-
-            
-            foreach (TrackElement te in trackElements){
-                te.draw();
-            }
 
             //left accept
             GUI.DrawTexture(new Rect( Screen.width - (numVisibleMeasures * widthPerBeat * 16) - 7 + 45, Screen.height - 90, 60, 30), leftAccept, ScaleMode.StretchToFill);
@@ -238,17 +183,9 @@ public class MasterController : MonoBehaviour {
         return false;
     }
 
-    //sets the track of the masterController, must be done after the track is fully loaded with enemies
-    public void setTrack(Track track) {
-        this.track = track;
-    }
-
     //sets the inBattle flage, calling true on this is the last step for actually starting the battle sequence. Calling false is the last step for ending battle
     public void setBattle(bool battle) {
         this.inBattle = battle;
-        if (battle) {
-            currentBeat = -16;
-            spawnTrackElements(true);
-        }
+
     }
 }
