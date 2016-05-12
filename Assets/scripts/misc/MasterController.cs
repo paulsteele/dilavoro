@@ -83,6 +83,8 @@ public class MasterController : MonoBehaviour {
         widthPerFrame = beatsPerFrame * widthPerBeat;
         //set up battle manager
         battleManager = new BattleController();
+        //push textures
+        battleManager.laneTexture = this.laneTexture;
         //run tests at end so no errors when doing integration testing
         if (runTests) {
             Tester.RunAllTests(this);
@@ -140,22 +142,11 @@ public class MasterController : MonoBehaviour {
         
     } 
 
-    /**
+    //Handles any drawing calls that need to be done for UI
     void OnGUI() {
-        if (inBattle) {
-            //the bar
-            GUI.DrawTexture(new Rect(0f, Screen.height - 90, Screen.width, 30), laneTexture, ScaleMode.StretchToFill);
-
-            //draw measure thing
-
-            //left accept
-            GUI.DrawTexture(new Rect( Screen.width - (numVisibleMeasures * widthPerBeat * 16) - 7 + 45, Screen.height - 90, 60, 30), leftAccept, ScaleMode.StretchToFill);
-            //right accept
-            GUI.DrawTexture(new Rect(Screen.width - (numVisibleMeasures * widthPerBeat * 16) + 7 + 45, Screen.height - 90, 60, 30), rightAccept, ScaleMode.StretchToFill);
-        }
+        battleManager.draw();
 
     }
-    */
     
 
     //Perform operations for advancing the beat; the beat must be moved up by 4 * bpm to correctly account for time
