@@ -23,7 +23,7 @@ public class Tester {
     }
 
     public static Segment getTestSegment() {
-        Segment s = new Segment(16, Segment.Classification.offensive);
+        Segment s = new Segment(16);
         s.setBeat(3, Beat.Type.bash, Beat.Note.A);
         s.setBeat(7, Beat.Type.bash, Beat.Note.A);
         s.setBeat(11, Beat.Type.bash, Beat.Note.A);

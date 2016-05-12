@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 /**
 Segements are the basic 'blocks' of actions taken place in the battle system,
+    this is the theoretical base of a measure
     
     each segement has a classification
     offensive - when the PLAYER is on the offensive 
@@ -14,21 +15,12 @@ Segements are the basic 'blocks' of actions taken place in the battle system,
     NOTE on length: best be a multiple of 4 or will have a bad time
 **/
 public class Segment {
-    
-    //what type of segment this is, offensive where player can attack, defensive where player needs to dodge, special for special attacks
-    public enum Classification {
-        offensive,
-        defensive,
-        special
-    }
-
 
     private int length; // length in number of beats
-    private Classification classification; //the class of this segment 
     private Beat[] beats; // the beats to play
 
     //create segment with specified beat length
-    public Segment(int length, Classification classification) {
+    public Segment(int length) {
         //set up arrays of types and notes
         this.length = length;
         beats = new Beat[length];
@@ -36,8 +28,6 @@ public class Segment {
         for (int i = 0; i < length; i++) {
             beats[i] = new Beat(Beat.Type.nothing, Beat.Note.empty);
         }
-        //set the segments classification
-        this.classification = classification;
     }
     
     //adds a beat to the segment pool at the given index
@@ -58,10 +48,5 @@ public class Segment {
     //returns the length of the segment
     public int getLength() {
         return length;
-    }
-
-    //returns the classification of the segment
-    public Classification getClassification() {
-        return classification;
     }
 }
