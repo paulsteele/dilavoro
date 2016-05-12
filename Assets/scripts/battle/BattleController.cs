@@ -11,23 +11,27 @@ public class BattleController {
     //pool of enemies to pull from
     List<Enemy> turnPool;
     //flag that is true when battle is taking place
-    bool inBattle = false;
+    bool battleStatus = false;
     //The random generator class
     Random rng;
 
-    BattleController() {
+    public BattleController() {
         enemylist = new List<Enemy>();
         turnPool = new List<Enemy>();
         rng = new Random();
     }
 
-    void addEnemy(Enemy enemy) {
+    public void addEnemy(Enemy enemy) {
         enemylist.Add(enemy);
     }
 
-    void startBattle() {
+    public void startBattle() {
         //start the battle
-        inBattle = true;
+        battleStatus = true;
+    }
+    //returns true if the battle is currently going on, and false if the battle is not taking place
+    public bool inBattle() {
+        return battleStatus;
     }
 
     //puts enemys in the list back into the pool
@@ -39,7 +43,7 @@ public class BattleController {
     }
 
     //gets a random pool entry
-    Measure getNext() {
+    public Measure getNext() {
         //refill the pool if it is empty
         if (turnPool.Count == 0) {
             refillPool();

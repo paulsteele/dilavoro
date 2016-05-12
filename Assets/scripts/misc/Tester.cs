@@ -19,7 +19,8 @@ public class Tester {
     public static void testTrack(MasterController master) {
         Enemy e = new Enemy();
         e.addSegment(getTestSegment());
-        master.setBattle(true);
+        master.getBattleController().addEnemy(e);
+        master.getBattleController().startBattle();
     }
 
     public static Segment getTestSegment() {

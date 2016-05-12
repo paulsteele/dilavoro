@@ -35,13 +35,15 @@ public class MasterController : MonoBehaviour {
     private int beatThreshold;
     //the amount of leeway the player has to hit the note they want
     public int hitLeeway;
-    //whether or not a battle is currently running, track better not be null when this is true
-    private bool inBattle;
     //UI STUFF VERY LIKELY TO CHANGE
     //the text object for displaying BPM
     private Text bpmText;
     //the bass sound
     private AudioSource bass;
+    //Handles anything dealing with the batte engine
+    private BattleController battleManager;
+
+
     public Texture laneTexture;
     public Texture leftAccept;
     public Texture rightAccept;
@@ -64,8 +66,6 @@ public class MasterController : MonoBehaviour {
             Debug.Log("Prefs reset");
             Application.Quit();
         }
-        //set up track and inBattle fields
-        inBattle = false;
         //setup beat counters to inital values
         currentBeat = 0;
         partialBeat = 0;
@@ -81,7 +81,8 @@ public class MasterController : MonoBehaviour {
         widthPerBeat = measureWidth / 16.0f;
         beatsPerFrame = (bpm / 60.0f) / 60.0f;
         widthPerFrame = beatsPerFrame * widthPerBeat;
-
+        //set up battle manager
+        battleManager = new BattleController();
         //run tests at end so no errors when doing integration testing
         if (runTests) {
             Tester.RunAllTests(this);
@@ -130,11 +131,8 @@ public class MasterController : MonoBehaviour {
         bool beatChanged = advanceBeat();
         //do actions when beats change
 
-        if (inBattle) {
-            
-            if (beatChanged) {
+        if (beatChanged) {
 
-            }
         }
     }
 
@@ -142,7 +140,7 @@ public class MasterController : MonoBehaviour {
         
     } 
 
-
+    /**
     void OnGUI() {
         if (inBattle) {
             //the bar
@@ -157,7 +155,7 @@ public class MasterController : MonoBehaviour {
         }
 
     }
-
+    */
     
 
     //Perform operations for advancing the beat; the beat must be moved up by 4 * bpm to correctly account for time
@@ -183,9 +181,8 @@ public class MasterController : MonoBehaviour {
         return false;
     }
 
-    //sets the inBattle flage, calling true on this is the last step for actually starting the battle sequence. Calling false is the last step for ending battle
-    public void setBattle(bool battle) {
-        this.inBattle = battle;
-
+    //returns the battle controller
+    public BattleController getBattleController() {
+        return battleManager;
     }
 }
