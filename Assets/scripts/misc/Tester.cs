@@ -33,10 +33,10 @@ public class Tester {
 
     public static Segment getTestSegment() {
         Segment s = new Segment(16);
-        s.setBeat(3, Beat.Type.bash, Beat.Note.A);
-        s.setBeat(7, Beat.Type.bash, Beat.Note.A);
-        s.setBeat(11, Beat.Type.bash, Beat.Note.A);
-        s.setBeat(15, Beat.Type.bash, Beat.Note.A);
+        s.setBeat(0, Beat.Type.bash, Beat.Note.A);
+        s.setBeat(4, Beat.Type.bash, Beat.Note.A);
+        s.setBeat(8, Beat.Type.bash, Beat.Note.A);
+        s.setBeat(12, Beat.Type.bash, Beat.Note.A);
         return s;
     }
 
