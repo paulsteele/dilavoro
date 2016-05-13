@@ -204,8 +204,18 @@ public class MasterController : MonoBehaviour {
 
     //plays tracks in the song list 
     public void playSong() {
+        float bps = bpm / 60.0f;
+        int thresh = 16;
+        if (partialBeat != 0) {
+            thresh--;
+        }
+        // 3 * beatLenght + partial beat = number of partial beats 
+        // number of partial beats / 
+        float time = (((thresh * beatThreshold) + partialBeat) / (float)beatThreshold) / bps;
+        Debug.Log(time);
+
         foreach (AudioSource audio in audioSources) {
-            audio.Play();
+            audio.PlayDelayed(time);
         }
     }
 }
