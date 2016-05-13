@@ -25,12 +25,10 @@ public class Tester {
     }
 
     public static void testAudio(MasterController master) {
-        AudioClip full = new AudioClip();
-        AudioClip seventy = new AudioClip();
-        AudioClip forty = new AudioClip();
-        AudioClip twenty = new AudioClip();
-        full = Resources.Load<AudioClip>("music/test/Dilavoro Test");
-        Debug.Log(full);
+        AudioClip full = Resources.Load<AudioClip>("music/test/Dilavoro Test");
+        AudioClip twenty = Resources.Load<AudioClip>("music/test/Test 20 Percent Health");
+        AudioClip forty = Resources.Load<AudioClip>("music/test/Test 40 Percent Health");
+        AudioClip seventy = Resources.Load<AudioClip>("music/test/Test 70 Percent Health");
         Song s = new Song(full, seventy, forty, twenty);
         master.loadSong(s);
         master.playSong();

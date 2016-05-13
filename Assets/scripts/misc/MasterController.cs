@@ -200,6 +200,12 @@ public class MasterController : MonoBehaviour {
     public void loadSong(Song song) {
         AudioSource full = AddAudio(song.full, true, false, 1.0f);
         audioSources.Add(full);
+        AudioSource twenty = AddAudio(song.twenty, true, false, 1.0f);
+        audioSources.Add(twenty);
+        AudioSource forty = AddAudio(song.forty, true, false, 1.0f);
+        audioSources.Add(forty);
+        AudioSource seventy = AddAudio(song.seventy, true, false, 1.0f);
+        audioSources.Add(seventy);
     }
 
     //plays tracks in the song list 
@@ -212,8 +218,6 @@ public class MasterController : MonoBehaviour {
         // 3 * beatLenght + partial beat = number of partial beats 
         // number of partial beats / 
         float time = (((thresh * beatThreshold) + partialBeat) / (float)beatThreshold) / bps;
-        Debug.Log(time);
-
         foreach (AudioSource audio in audioSources) {
             audio.PlayDelayed(time);
         }
