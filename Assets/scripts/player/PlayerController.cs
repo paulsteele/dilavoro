@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour {
         if (inputAttack) {
             //see if master thinks its a hit
             if (master.onHit()) {
-                attacksound.Play();
+                //attacksound.Play();
             }
             //forcibly remove the inputAttack since a click HAS to be registered
             inputAttack = false;

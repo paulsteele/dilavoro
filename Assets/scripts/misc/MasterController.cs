@@ -40,6 +40,8 @@ public class MasterController : MonoBehaviour {
     private Text bpmText;
     //the bass sound
     private AudioSource bass;
+    //the full sound
+    private AudioSource full;
     //Handles anything dealing with the batte engine
     private BattleController battleManager;
 
@@ -76,7 +78,10 @@ public class MasterController : MonoBehaviour {
         Debug.Log(beatThreshold);
         //find UI components and assign to fields
         bpmText = GameObject.Find("bpmcounter").GetComponent<Text>();
-        bass = GetComponent<AudioSource>();
+        //Set up AudioSources
+        AudioSource[] audios = GetComponents < AudioSource >();
+        bass = audios[0];
+        full = audios[1];
        // measureWidth = Screen.width / numVisibleMeasures;
         //widthPerBeat = measureWidth / 16.0f;
         beatsPerFrame = (bpm / 60.0f) / 60.0f;
@@ -94,6 +99,7 @@ public class MasterController : MonoBehaviour {
         //run tests at end so no errors when doing integration testing
         if (runTests) {
             Tester.RunAllTests(this);
+            full.Play();
         }
     }
 

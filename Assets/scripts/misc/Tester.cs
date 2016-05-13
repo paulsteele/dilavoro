@@ -20,7 +20,15 @@ public class Tester {
         Enemy e = new Enemy();
         e.addSegment(getTestSegment());
         master.getBattleController().addEnemy(e);
+        testAudio();
         master.getBattleController().startBattle();
+    }
+
+    public static void testAudio() {
+        AudioSource full = new AudioSource();
+        AudioSource seventy = new AudioSource();
+        AudioSource forty = new AudioSource();
+        AudioSource twenty = new AudioSource();
     }
 
     public static Segment getTestSegment() {
