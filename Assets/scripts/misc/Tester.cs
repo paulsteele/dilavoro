@@ -20,15 +20,21 @@ public class Tester {
         Enemy e = new Enemy();
         e.addSegment(getTestSegment());
         master.getBattleController().addEnemy(e);
-        testAudio();
+        testAudio(master);
         master.getBattleController().startBattle();
     }
 
-    public static void testAudio() {
-        AudioSource full = new AudioSource();
-        AudioSource seventy = new AudioSource();
-        AudioSource forty = new AudioSource();
-        AudioSource twenty = new AudioSource();
+    public static void testAudio(MasterController master) {
+        AudioClip full = new AudioClip();
+        AudioClip seventy = new AudioClip();
+        AudioClip forty = new AudioClip();
+        AudioClip twenty = new AudioClip();
+        full = Resources.Load<AudioClip>("music/test/Dilavoro Test");
+        Debug.Log(full);
+        Song s = new Song(full, seventy, forty, twenty);
+        master.loadSong(s);
+        master.playSong();
+
     }
 
     public static Segment getTestSegment() {

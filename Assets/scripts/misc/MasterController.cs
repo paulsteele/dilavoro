@@ -40,6 +40,8 @@ public class MasterController : MonoBehaviour {
     private Text bpmText;
     //Handles anything dealing with the batte engine
     private BattleController battleManager;
+    //List of AudioSources
+    private List<AudioSource> audioSources;
 
 
     public Texture laneTexture;
@@ -88,6 +90,9 @@ public class MasterController : MonoBehaviour {
         battleManager.defendTexture = this.defendTexture;
         battleManager.pierceTexture = this.pierceTexture;
         battleManager.acceptTexture = this.acceptTexture;
+        //Init the audio sources
+        audioSources = new List<AudioSource>();
+
         //run tests at end so no errors when doing integration testing
         if (runTests) {
             Tester.RunAllTests(this);
@@ -180,5 +185,27 @@ public class MasterController : MonoBehaviour {
     //returns the battle controller
     public BattleController getBattleController() {
         return battleManager;
+    }
+
+    //helper to create a background track, derived from http://answers.unity3d.com/questions/240468/how-to-play-multiple-audioclips-from-the-same-obje.html
+    public AudioSource AddAudio(AudioClip clip, bool loop, bool playAwake, float vol) {
+        AudioSource newAudio = gameObject.AddComponent<AudioSource>();
+        newAudio.clip = clip; 
+        newAudio.loop = loop;
+        newAudio.playOnAwake = playAwake;
+        newAudio.volume = vol; 
+        return newAudio; 
+ }
+    //puts a song in to play
+    public void loadSong(Song song) {
+        AudioSource full = AddAudio(song.full, true, false, 1.0f);
+        audioSources.Add(full);
+    }
+
+    //plays tracks in the song list 
+    public void playSong() {
+        foreach (AudioSource audio in audioSources) {
+            audio.Play();
+        }
     }
 }
