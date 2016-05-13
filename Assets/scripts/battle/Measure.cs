@@ -11,10 +11,16 @@ public class Measure  {
     private Enemy enemy;
     //the xlocation of this measure
     private float x;
+    //the beat this measure started on
+    private int startBeat;
 
-   public Measure(Segment segment, Enemy enemy) {
+   public Measure(Segment segment, Enemy enemy, int startBeat) {
+        //set the segment used as the base
         this.segment = segment;
+        //set the enemy that is doing this beat
         this.enemy = enemy;
+        //set the startBeat
+        this.startBeat = startBeat;
         //starts at the edge of the screen
         x = Screen.width;
     }
@@ -33,5 +39,9 @@ public class Measure  {
 
     public void setX(float x) {
         this.x = x;
+    }
+
+    public int getStartBeat() {
+        return startBeat;
     }
 }

@@ -12,6 +12,8 @@ public class BattleController {
     List<Enemy> turnPool;
     //list of measures to work through
     List<Measure> measures;
+    //holder list to remove measures
+    List<Measure> removeList;
     //flag that is true when battle is taking place
     bool battleStatus = false;
     //The random generator class
@@ -40,12 +42,13 @@ public class BattleController {
         enemylist = new List<Enemy>();
         turnPool = new List<Enemy>();
         measures = new List<Measure>();
+        removeList = new List<Measure>();
         //init the rng manipulator
         rng = new Random();
         //set the number of "16th notes" in a "measure"
         beatsPerBar = 16.0f;
         //set the number of measures that will be shown on the screen. A larger number will make the speed of the scrolling seem slower
-        numVisibleMeasures = 4.0f;
+        numVisibleMeasures = 2.0f;
         //how much screen space should seperate beats
         widthPerBeat = (Screen.width / numVisibleMeasures) / beatsPerBar;
         //how much screen space a measure should move each fixedupdate
@@ -106,7 +109,7 @@ public class BattleController {
         //get the segment
         Segment segment = enemy.getSegmentPool()[0]; //TODO CHANGE TO RANDOM CHOICE
         //create the measure
-        Measure measure = new Measure(segment, enemy);
+        Measure measure = new Measure(segment, enemy, beat);
         return measure;
     }
 
@@ -163,6 +166,7 @@ public class BattleController {
     Will be called everytime the beat is actually changed in the mastercontroller
     */
     public void updateBeatChange() {
+        Debug.Log(measures.Count);
         //Debug.Log(measureCooldown);
         //check to see if need to spawn another measure
         if (measureCooldown == 0) { //means another measure is ready
@@ -177,6 +181,26 @@ public class BattleController {
         else { //means another measure is not ready
             measureCooldown--;
         }
+
+        //cleanup old measures that are off the screen
+        //first clear the remove list
+        removeList.Clear();
+        foreach (Measure measure in measures) {
+            //calculate the difference in beats of when the measure was first drawn to now
+            int difference = beat - measure.getStartBeat();
+            //the threshold of when a measure is offscreen is when the number of visible beats on screen + the length of that measure is exceeded
+            int threshold = ((int)(numVisibleMeasures * beatsPerBar)) + measure.getSegment().getLength();
+            //if the differece of the start time is greater than what it can be seen on screen as
+            if (difference > threshold) {
+                removeList.Add(measure);
+            }
+        }
+        //remove all old measures (really should only ever be one)
+        foreach (Measure measure in removeList) {
+            measures.Remove(measure);
+        }
+        //update the beat
+        beat++;
     }
     
 }
