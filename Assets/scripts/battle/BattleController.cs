@@ -33,9 +33,12 @@ public class BattleController {
     //how many beats until the next measure needs to be added to be displayed
     int measureCooldown;
 
-    //Textures
+    //Textures - set by master controller
     public Texture laneTexture;
-    public Texture beatTexture;
+    public Texture emptyTexture;
+    public Texture pierceTexture;
+    public Texture defendTexture;
+    public Texture acceptTexture;
 
     public BattleController() {
         //init the enemy and measure data structures
@@ -116,8 +119,9 @@ public class BattleController {
     public void draw() {
         if (battleStatus) {
             //the bar
-            GUI.DrawTexture(new Rect(0f, Screen.height - 90, Screen.width, 30), laneTexture, ScaleMode.StretchToFill);
-
+            GUI.DrawTexture(new Rect(0f, Screen.height - 111, Screen.width, 50), laneTexture, ScaleMode.StretchToFill);
+            //the accept measure
+            GUI.DrawTexture(new Rect(Screen.width - (24 * widthPerBeat), Screen.height - 150, 128, 128), acceptTexture, ScaleMode.StretchToFill);
             //draw every measure
             foreach(Measure measure in measures) {
                 //get the x position of the measure
@@ -131,7 +135,10 @@ public class BattleController {
                     Beat beat = segment.getBeat(i);
                     //draw the beat
                     if (beat.getType() == Beat.Type.bash) {
-                        GUI.DrawTexture(new Rect(measureX + (i * widthPerBeat), Screen.height - 90, 30, 30), beatTexture, ScaleMode.StretchToFill);
+                        GUI.DrawTexture(new Rect(measureX + (i * widthPerBeat), Screen.height - 110, 48, 48), defendTexture, ScaleMode.StretchToFill);
+                    }
+                    if (beat.getType() == Beat.Type.nothing) {
+                        GUI.DrawTexture(new Rect(measureX + (i * widthPerBeat), Screen.height - 110, 48, 48), emptyTexture, ScaleMode.StretchToFill);
                     }
                     
                 }

@@ -45,10 +45,11 @@ public class MasterController : MonoBehaviour {
 
 
     public Texture laneTexture;
-    public Texture leftAccept;
-    public Texture rightAccept;
     public Texture measureLine;
-    public Texture beatTexture;
+    public Texture emptyTexture;
+    public Texture pierceTexture;
+    public Texture defendTexture;
+    public Texture acceptTexture;
 
 
     float measureWidth;
@@ -86,7 +87,10 @@ public class MasterController : MonoBehaviour {
         battleManager.setBPM(bpm);
         //push textures
         battleManager.laneTexture = this.laneTexture;
-        battleManager.beatTexture = this.beatTexture;
+        battleManager.emptyTexture = this.emptyTexture;
+        battleManager.defendTexture = this.defendTexture;
+        battleManager.pierceTexture = this.pierceTexture;
+        battleManager.acceptTexture = this.acceptTexture;
         //run tests at end so no errors when doing integration testing
         if (runTests) {
             Tester.RunAllTests(this);
