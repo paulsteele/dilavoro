@@ -166,7 +166,6 @@ public class BattleController {
     Will be called everytime the beat is actually changed in the mastercontroller
     */
     public void updateBeatChange() {
-        Debug.Log(measures.Count);
         //Debug.Log(measureCooldown);
         //check to see if need to spawn another measure
         if (measureCooldown == 0) { //means another measure is ready
