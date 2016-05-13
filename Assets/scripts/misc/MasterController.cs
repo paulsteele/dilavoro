@@ -134,12 +134,14 @@ public class MasterController : MonoBehaviour {
         //do calculataions for adavancing the beat and see if a beat changed
         bool beatChanged = advanceBeat();
         
-        //update the battle in fixed timescale
-        battleManager.update();
+        
         //do actions when beats change
         if (beatChanged) {
-
+            //update battleManager that needs to be done per beat
+            battleManager.updateBeatChange();
         }
+        //update the battle in fixed timescale
+        battleManager.fixedUpdate();
     }
 
     void spawnTrackElements() {

@@ -26,20 +26,34 @@ public class BattleController {
     float widthPerFrame;
     //the bpm that the master controller is following
     float bpm;
+    //the beat the battle is in, doesn't loop like in the MasterConroller, just counts all the beats
+    int beat;
+    //how many beats until the next measure needs to be added to be displayed
+    int measureCooldown;
 
     //Textures
     public Texture laneTexture;
     public Texture beatTexture;
 
     public BattleController() {
+        //init the enemy and measure data structures
         enemylist = new List<Enemy>();
         turnPool = new List<Enemy>();
         measures = new List<Measure>();
+        //init the rng manipulator
         rng = new Random();
+        //set the number of "16th notes" in a "measure"
         beatsPerBar = 16.0f;
-        numVisibleMeasures = 2.0f;
+        //set the number of measures that will be shown on the screen. A larger number will make the speed of the scrolling seem slower
+        numVisibleMeasures = 4.0f;
+        //how much screen space should seperate beats
         widthPerBeat = (Screen.width / numVisibleMeasures) / beatsPerBar;
-        widthPerFrame = (widthPerBeat / bpm) / Time.fixedDeltaTime;
+        //how much screen space a measure should move each fixedupdate
+        //widthPerFrame = (widthPerBeat / bpm) / Time.fixedDeltaTime;
+        //set the initial beat counter to 0.
+        beat = 0;
+        //set the measure cooldown
+        measureCooldown = 0;
         
     }
 
@@ -48,15 +62,19 @@ public class BattleController {
     }
 
     public void setBPM(float bpm) {
+        //set the bpm of the encounter
         this.bpm = bpm;
-        widthPerFrame = (widthPerBeat / bpm) / Time.fixedDeltaTime;
+        // the number of beats per second
+        float bps = bpm / 60.0f;
+        //how far a beat should go each fixedupdate frame
+        widthPerFrame = bps * Time.fixedDeltaTime * widthPerBeat;
     }
 
     public void startBattle() {
         //start the battle
         battleStatus = true;
-        //TEST SAMPLE
-        measures.Add(getNext());
+        //reset the beat
+        beat = 0;
     }
     //returns true if the battle is currently going on, and false if the battle is not taking place
     public bool inBattle() {
@@ -103,6 +121,7 @@ public class BattleController {
                 float measureX = measure.getX();
                 //get the segment for the measure
                 Segment segment = measure.getSegment();
+                //draw a line where the measure is
                 //loop through the beats of the segment
                 for (int i = 0; i < segment.getLength(); i++) {
                     //obtain the next beat
@@ -125,7 +144,11 @@ public class BattleController {
         }
     }
 
-    public void update() {
+    /**
+    Will be called in Master Controller's fixed update
+        handles updating the position of the measures
+    */
+    public void fixedUpdate() {
         //only do updating if need to
         if (battleStatus) {
             //update the x position of 
@@ -133,6 +156,26 @@ public class BattleController {
                 //Debug.Log(measure.getX());
                 measure.setX(measure.getX() - widthPerFrame);
             }
+        }
+    }
+
+    /**
+    Will be called everytime the beat is actually changed in the mastercontroller
+    */
+    public void updateBeatChange() {
+        //Debug.Log(measureCooldown);
+        //check to see if need to spawn another measure
+        if (measureCooldown == 0) { //means another measure is ready
+            //get the next eligible measure
+            Measure measure = getNext();
+            //set cooldown to the length of this measure, get rid of one to make the length line up
+            measureCooldown = measure.getSegment().getLength() - 1;
+            
+            //add the measure to the measures list
+            measures.Add(measure);
+        }
+        else { //means another measure is not ready
+            measureCooldown--;
         }
     }
     
