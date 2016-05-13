@@ -16,24 +16,47 @@ public class BattleController {
     bool battleStatus = false;
     //The random generator class
     Random rng;
-
+    //how many beats are in a measure
+    float beatsPerBar;
+    //how many measures are visible on
+    float numVisibleMeasures;
+    //width of every beat
+    float widthPerBeat;
+    //width a beat needs to change per frame
+    float widthPerFrame;
+    //the bpm that the master controller is following
+    float bpm;
 
     //Textures
     public Texture laneTexture;
+    public Texture beatTexture;
 
     public BattleController() {
         enemylist = new List<Enemy>();
         turnPool = new List<Enemy>();
+        measures = new List<Measure>();
         rng = new Random();
+        beatsPerBar = 16.0f;
+        numVisibleMeasures = 2.0f;
+        widthPerBeat = (Screen.width / numVisibleMeasures) / beatsPerBar;
+        widthPerFrame = (widthPerBeat / bpm) / Time.fixedDeltaTime;
+        
     }
 
     public void addEnemy(Enemy enemy) {
         enemylist.Add(enemy);
     }
 
+    public void setBPM(float bpm) {
+        this.bpm = bpm;
+        widthPerFrame = (widthPerBeat / bpm) / Time.fixedDeltaTime;
+    }
+
     public void startBattle() {
         //start the battle
         battleStatus = true;
+        //TEST SAMPLE
+        measures.Add(getNext());
     }
     //returns true if the battle is currently going on, and false if the battle is not taking place
     public bool inBattle() {
@@ -74,12 +97,42 @@ public class BattleController {
             //the bar
             GUI.DrawTexture(new Rect(0f, Screen.height - 90, Screen.width, 30), laneTexture, ScaleMode.StretchToFill);
 
+            //draw every measure
+            foreach(Measure measure in measures) {
+                //get the x position of the measure
+                float measureX = measure.getX();
+                //get the segment for the measure
+                Segment segment = measure.getSegment();
+                //loop through the beats of the segment
+                for (int i = 0; i < segment.getLength(); i++) {
+                    //obtain the next beat
+                    Beat beat = segment.getBeat(i);
+                    //draw the beat
+                    if (beat.getType() == Beat.Type.bash) {
+                        GUI.DrawTexture(new Rect(measureX + (i * widthPerBeat), Screen.height - 90, 30, 30), beatTexture, ScaleMode.StretchToFill);
+                    }
+                    
+                }
+            }
+
+
             //draw measure thing
 
             //left accept
             //GUI.DrawTexture(new Rect(Screen.width - (numVisibleMeasures * widthPerBeat * 16) - 7 + 45, Screen.height - 90, 60, 30), leftAccept, ScaleMode.StretchToFill);
             //right accept
             //GUI.DrawTexture(new Rect(Screen.width - (numVisibleMeasures * widthPerBeat * 16) + 7 + 45, Screen.height - 90, 60, 30), rightAccept, ScaleMode.StretchToFill);
+        }
+    }
+
+    public void update() {
+        //only do updating if need to
+        if (battleStatus) {
+            //update the x position of 
+            foreach (Measure measure in measures) {
+                //Debug.Log(measure.getX());
+                measure.setX(measure.getX() - widthPerFrame);
+            }
         }
     }
     

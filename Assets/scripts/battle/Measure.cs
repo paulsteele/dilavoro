@@ -19,19 +19,19 @@ public class Measure  {
         x = Screen.width;
     }
 
-    Segment getSegment() {
+    public Segment getSegment() {
         return segment;
     }
 
-    Enemy getEnemy() {
+    public Enemy getEnemy() {
         return enemy;
     }
 
-    float getX() {
+    public float getX() {
         return x;
     }
 
-    void setX(float x) {
+    public void setX(float x) {
         this.x = x;
     }
 }

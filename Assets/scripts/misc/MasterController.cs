@@ -50,8 +50,7 @@ public class MasterController : MonoBehaviour {
     public Texture measureLine;
     public Texture beatTexture;
 
-    int beatsPerBar = 16;
-    float numVisibleMeasures = 5.5f;
+
     float measureWidth;
     float widthPerBeat;
     float beatsPerFrame;
@@ -77,14 +76,17 @@ public class MasterController : MonoBehaviour {
         //find UI components and assign to fields
         bpmText = GameObject.Find("bpmcounter").GetComponent<Text>();
         bass = GetComponent<AudioSource>();
-        measureWidth = Screen.width / numVisibleMeasures;
-        widthPerBeat = measureWidth / 16.0f;
+       // measureWidth = Screen.width / numVisibleMeasures;
+        //widthPerBeat = measureWidth / 16.0f;
         beatsPerFrame = (bpm / 60.0f) / 60.0f;
-        widthPerFrame = beatsPerFrame * widthPerBeat;
+        //widthPerFrame = beatsPerFrame * widthPerBeat;
         //set up battle manager
         battleManager = new BattleController();
+        //set default bpm for battlemanager
+        battleManager.setBPM(bpm);
         //push textures
         battleManager.laneTexture = this.laneTexture;
+        battleManager.beatTexture = this.beatTexture;
         //run tests at end so no errors when doing integration testing
         if (runTests) {
             Tester.RunAllTests(this);
@@ -131,8 +133,10 @@ public class MasterController : MonoBehaviour {
     void FixedUpdate() {
         //do calculataions for adavancing the beat and see if a beat changed
         bool beatChanged = advanceBeat();
+        
+        //update the battle in fixed timescale
+        battleManager.update();
         //do actions when beats change
-
         if (beatChanged) {
 
         }
