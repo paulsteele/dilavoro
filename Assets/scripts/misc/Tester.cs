@@ -21,7 +21,7 @@ public class Tester {
         e.addSegment(getTestSegment());
         master.getBattleController().addEnemy(e);
         testAudio(master);
-        master.getBattleController().startBattle();
+        master.getBattleController().startBattle(5);
     }
 
     public static void testAudio(MasterController master) {

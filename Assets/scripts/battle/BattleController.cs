@@ -16,6 +16,8 @@ public class BattleController {
     List<Measure> removeList;
     //flag that is true when battle is taking place
     bool battleStatus = false;
+    //flag for internal starting up
+    bool battleStartup = false;
     //The random generator class
     Random rng;
     //how many beats are in a measure
@@ -32,6 +34,8 @@ public class BattleController {
     int beat;
     //how many beats until the next measure needs to be added to be displayed
     int measureCooldown;
+    //how long the battle needs to wait to start
+    int startCooldown;
 
     //Textures - set by master controller
     public Texture laneTexture;
@@ -76,9 +80,11 @@ public class BattleController {
         widthPerFrame = bps * Time.fixedDeltaTime * widthPerBeat;
     }
 
-    public void startBattle() {
+    public void startBattle(int cooldown) {
+        //set the cooldown
+        this.startCooldown = cooldown;
         //start the battle
-        battleStatus = true;
+        battleStartup = true;
         //reset the beat
         beat = 0;
     }
@@ -173,40 +179,50 @@ public class BattleController {
     Will be called everytime the beat is actually changed in the mastercontroller
     */
     public void updateBeatChange() {
-        //Debug.Log(measureCooldown);
-        //check to see if need to spawn another measure
-        if (measureCooldown == 0) { //means another measure is ready
-            //get the next eligible measure
-            Measure measure = getNext();
-            //set cooldown to the length of this measure, get rid of one to make the length line up
-            measureCooldown = measure.getSegment().getLength() - 1;
-            
-            //add the measure to the measures list
-            measures.Add(measure);
-        }
-        else { //means another measure is not ready
-            measureCooldown--;
-        }
-
-        //cleanup old measures that are off the screen
-        //first clear the remove list
-        removeList.Clear();
-        foreach (Measure measure in measures) {
-            //calculate the difference in beats of when the measure was first drawn to now
-            int difference = beat - measure.getStartBeat();
-            //the threshold of when a measure is offscreen is when the number of visible beats on screen + the length of that measure is exceeded
-            int threshold = ((int)(numVisibleMeasures * beatsPerBar)) + measure.getSegment().getLength();
-            //if the differece of the start time is greater than what it can be seen on screen as
-            if (difference > threshold) {
-                removeList.Add(measure);
+        //only run if battle is startingup
+        if (battleStartup) {
+            startCooldown--;
+            if (startCooldown < 0) {
+                battleStartup = false;
+                battleStatus = true;
             }
         }
-        //remove all old measures (really should only ever be one)
-        foreach (Measure measure in removeList) {
-            measures.Remove(measure);
+        //only run if battle actually started up
+        if (battleStatus) {
+            //check to see if need to spawn another measure
+            if (measureCooldown == 0) { //means another measure is ready
+                //get the next eligible measure
+                Measure measure = getNext();
+                //set cooldown to the length of this measure, get rid of one to make the length line up
+                measureCooldown = measure.getSegment().getLength() - 1;
+
+                //add the measure to the measures list
+                measures.Add(measure);
+            }
+            else { //means another measure is not ready
+                measureCooldown--;
+            }
+
+            //cleanup old measures that are off the screen
+            //first clear the remove list
+            removeList.Clear();
+            foreach (Measure measure in measures) {
+                //calculate the difference in beats of when the measure was first drawn to now
+                int difference = beat - measure.getStartBeat();
+                //the threshold of when a measure is offscreen is when the number of visible beats on screen + the length of that measure is exceeded
+                int threshold = ((int)(numVisibleMeasures * beatsPerBar)) + measure.getSegment().getLength();
+                //if the differece of the start time is greater than what it can be seen on screen as
+                if (difference > threshold) {
+                    removeList.Add(measure);
+                }
+            }
+            //remove all old measures (really should only ever be one)
+            foreach (Measure measure in removeList) {
+                measures.Remove(measure);
+            }
+            //update the beat
+            beat++;
         }
-        //update the beat
-        beat++;
     }
     
 }

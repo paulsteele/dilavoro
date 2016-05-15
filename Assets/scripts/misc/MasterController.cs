@@ -208,7 +208,7 @@ public class MasterController : MonoBehaviour {
     //plays tracks in the song list 
     public void playSong() {
         float bps = bpm / 60.0f;
-        int thresh = 16;
+        int thresh = 4;
         if (partialBeat != 0) {
             thresh--;
         }
