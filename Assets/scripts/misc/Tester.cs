@@ -29,7 +29,11 @@ public class Tester {
         AudioClip twenty = Resources.Load<AudioClip>("music/test/Test 20 Percent Health");
         AudioClip forty = Resources.Load<AudioClip>("music/test/Test 40 Percent Health");
         AudioClip seventy = Resources.Load<AudioClip>("music/test/Test 70 Percent Health");
-        Song s = new Song(full, seventy, forty, twenty);
+        Song s = new Song();
+        s.addClip(full);
+        s.addClip(twenty);
+        s.addClip(forty);
+        s.addClip(seventy);
         master.loadSong(s);
         master.playSong();
 

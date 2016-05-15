@@ -198,14 +198,11 @@ public class MasterController : MonoBehaviour {
  }
     //puts a song in to play
     public void loadSong(Song song) {
-        AudioSource full = AddAudio(song.full, true, false, 1.0f);
-        audioSources.Add(full);
-        AudioSource twenty = AddAudio(song.twenty, true, false, 1.0f);
-        audioSources.Add(twenty);
-        AudioSource forty = AddAudio(song.forty, true, false, 1.0f);
-        audioSources.Add(forty);
-        AudioSource seventy = AddAudio(song.seventy, true, false, 1.0f);
-        audioSources.Add(seventy);
+        
+        foreach (AudioClip audio in song.getClips()) {
+            AudioSource source = AddAudio(audio, true, false, 1.0f);
+            audioSources.Add(source);
+        }
     }
 
     //plays tracks in the song list 

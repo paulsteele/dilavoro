@@ -1,17 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
+/**
+    Container for audio clips for a song
+    */
 public class Song {
-    public AudioClip full;
-    public AudioClip seventy;
-    public AudioClip forty;
-    public AudioClip twenty;
+    //That actual audio clips
+    public List<AudioClip> audio;
 
-    public Song (AudioClip full, AudioClip seventy, AudioClip forty, AudioClip twenty) {
-        this.full = full;
-        this.seventy = seventy;
-        this.forty = forty;
-        this.twenty = twenty;
+    public Song () {
+        //init the list
+        audio = new List<AudioClip>();
+    }
+
+    public void addClip(AudioClip clip) {
+        //add the clip to the container
+        audio.Add(clip);
+    }
+
+    public List<AudioClip> getClips() {
+        return audio;
     }
 
 }
