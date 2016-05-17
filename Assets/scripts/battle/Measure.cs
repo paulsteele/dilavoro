@@ -13,8 +13,12 @@ public class Measure  {
     private float x;
     //the beat this measure started on
     private int startBeat;
+    //the counter that tells what index of beat should be returned
+    int beatCounter;
+    //flag to tell the battle interpreter if the last beat has already passed or not
+    bool expired;
 
-   public Measure(Segment segment, Enemy enemy, int startBeat) {
+   public Measure(Segment segment, Enemy enemy, int startBeat, int beatCounter) {
         //set the segment used as the base
         this.segment = segment;
         //set the enemy that is doing this beat
@@ -23,6 +27,28 @@ public class Measure  {
         this.startBeat = startBeat;
         //starts at the edge of the screen
         x = Screen.width;
+        //set beat counter
+        this.beatCounter = beatCounter;
+        //set expired to false
+        expired = false;
+    }
+
+    public void advanceCounter() {
+        //advance the counter
+        beatCounter++;
+        //if the last beat has passed
+        if (beatCounter >= segment.getLength()) {
+            expired = true;
+        }
+    }
+
+    public Beat getBeat() {
+        //if the measure hasn't made it yet or if too far
+        if (beatCounter < 0 || beatCounter >= segment.getLength()) {
+            return new Beat(Beat.Type.error, Beat.Note.empty);
+        }
+        //otherwise return the beat of the segment
+        return segment.getBeat(beatCounter);
     }
 
     public Segment getSegment() {
@@ -43,5 +69,9 @@ public class Measure  {
 
     public int getStartBeat() {
         return startBeat;
+    }
+
+    public bool isExpired() {
+        return expired;
     }
 }

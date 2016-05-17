@@ -28,6 +28,8 @@ public class BattleController {
     float widthPerBeat;
     //width a beat needs to change per frame
     float widthPerFrame;
+    //the number of beats that elapse between a measure spawning, and when its first beat will be there 
+    int beatsTillAccept;
     //the bpm that the master controller is following
     float bpm;
     //the beat the battle is in, doesn't loop like in the MasterConroller, just counts all the beats
@@ -64,6 +66,8 @@ public class BattleController {
         beat = 0;
         //set the measure cooldown
         measureCooldown = 0;
+        //set the number of beats until accept
+        beatsTillAccept = 24;
         
     }
 
@@ -117,8 +121,8 @@ public class BattleController {
         turnPool.RemoveAt(index);
         //get the segment
         Segment segment = enemy.getSegmentPool()[0]; //TODO CHANGE TO RANDOM CHOICE
-        //create the measure
-        Measure measure = new Measure(segment, enemy, beat);
+        //create the measure (last argument is negative to have the countdown work)
+        Measure measure = new Measure(segment, enemy, beat, -beatsTillAccept);
         return measure;
     }
 
@@ -127,7 +131,7 @@ public class BattleController {
             //the bar
             GUI.DrawTexture(new Rect(0f, Screen.height - 111, Screen.width, 50), laneTexture, ScaleMode.StretchToFill);
             //the accept measure
-            GUI.DrawTexture(new Rect(Screen.width - (24 * widthPerBeat), Screen.height - 150, 128, 128), acceptTexture, ScaleMode.StretchToFill);
+            GUI.DrawTexture(new Rect(Screen.width - (beatsTillAccept * widthPerBeat), Screen.height - 150, 128, 128), acceptTexture, ScaleMode.StretchToFill);
             //draw every measure
             foreach(Measure measure in measures) {
                 //get the x position of the measure
@@ -189,6 +193,20 @@ public class BattleController {
         }
         //only run if battle actually started up
         if (battleStatus) {
+            //search measures until one is found that isn't expired
+            foreach (Measure measure in measures) {
+                //if it isn't expired
+                if (!measure.isExpired()) {
+                    //obtain the beat
+                    Beat songbeat = measure.getBeat();
+                    if (songbeat.getType() == Beat.Type.bash) {
+                        Debug.Log("beat on beat " + beat);
+                    }
+                    break;
+                }
+            }
+
+
             //check to see if need to spawn another measure
             if (measureCooldown == 0) { //means another measure is ready
                 //get the next eligible measure
@@ -215,6 +233,8 @@ public class BattleController {
                 if (difference > threshold) {
                     removeList.Add(measure);
                 }
+                //advance the counter of each segment
+                measure.advanceCounter();
             }
             //remove all old measures (really should only ever be one)
             foreach (Measure measure in removeList) {

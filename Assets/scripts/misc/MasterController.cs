@@ -108,11 +108,11 @@ public class MasterController : MonoBehaviour {
         int beat = checkBeat();
         //if beat did successfully hit
         if (beat != -1) {
-            Debug.Log("hit on beat " + beat);
+            //Debug.Log("hit on beat " + beat);
             return true;
         }
         //otherwise return a miss
-        Debug.Log("miss on beat " + currentBeat + " | p: " + partialBeat + "/" + beatThreshold);
+       // Debug.Log("miss on beat " + currentBeat + " | p: " + partialBeat + "/" + beatThreshold);
         return false;
     }
 
