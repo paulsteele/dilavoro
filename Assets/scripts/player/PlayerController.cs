@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
     public KeyCode keyRight;
     public KeyCode keyUp;
     public KeyCode keyAttack;
+    public KeyCode keyAttackAlt;
 
     //horizontal movespeed is how fast left and right player moves
     public int horizontalMoveSpeed;
@@ -59,7 +60,7 @@ public class PlayerController : MonoBehaviour {
         //jump
         inputJump = Input.GetKey(keyUp);
         //attack
-        if (Input.GetKeyDown(keyAttack)) {
+        if (Input.GetKeyDown(keyAttack) || Input.GetKeyDown(keyAttackAlt)) {
             inputAttack = true;
         }
     }
